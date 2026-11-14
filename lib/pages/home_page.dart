@@ -1265,7 +1265,13 @@ class _WorldTileState extends State<_WorldTile> {
             borderRadius: BorderRadius.circular(14),
             clipBehavior: Clip.antiAlias,
             child: Ink(
-              decoration: BoxDecoration(color: Color.lerp(base, tint, _hover ? .22 : .12)),
+              // 最近游玩保留封面颜色的渐变（界面其他地方默认不用渐变）
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color.lerp(base, tint, _hover ? .45 : .32)!, base],
+                  stops: const [0, .55],
+                ),
+              ),
               child: InkWell(
                 onTap: widget.onTap,
                 child: Padding(
