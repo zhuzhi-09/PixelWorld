@@ -43,7 +43,7 @@ const _subTitles = {
   SubPage.versions: '版本选择',
   SubPage.log: '游戏日志',
   SubPage.instance: '版本详情',
-  SubPage.tasks: '任务历史',
+  SubPage.tasks: '任务',
   SubPage.diagnose: '错误分析',
 };
 

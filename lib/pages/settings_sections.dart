@@ -15,6 +15,7 @@ import '../core/task.dart';
 import '../core/updater.dart';
 import '../platform.dart';
 import '../widgets/format.dart';
+import '../widgets/maintenance_actions.dart';
 import '../widgets/pcl_import_dialog.dart';
 import '../widgets/settings_group.dart';
 import '../widgets/update_dialog.dart';
@@ -674,6 +675,19 @@ class MiscSection extends StatelessWidget {
             ),
           ],
         ),
+        if (Platform.isWindows)
+          SettingsGroup(
+            title: '系统',
+            children: [
+              ListTile(
+                contentPadding: _rowPadding,
+                leading: const Icon(Icons.shortcut),
+                title: const Text('创建桌面快捷方式'),
+                subtitle: const Text('在桌面创建启动器的快捷方式'),
+                trailing: FilledButton.tonal(onPressed: () => createShortcutWithToast(context), child: const Text('创建')),
+              ),
+            ],
+          ),
         SettingsGroup(
           title: '下载',
           children: [

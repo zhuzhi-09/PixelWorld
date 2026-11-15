@@ -14,9 +14,10 @@ import '../widgets/side_nav.dart';
 import '../widgets/ai_settings.dart';
 import '../widgets/ai_workspace_settings.dart';
 import '../widgets/storage_location.dart';
+import 'docs_page.dart';
 import 'settings_sections.dart';
 
-enum _Section { launch, java, manage, appearance, misc, ai, aiTools, aiWorkspace, about }
+enum _Section { launch, java, manage, appearance, misc, ai, aiTools, aiWorkspace, about, docs }
 
 /// 从别的页面跳到设置的某个小节（值为小节名，例如 ai、aiTools、aiWorkspace），见 ShellNav.openSettings
 final settingsSectionRequest = ValueNotifier<String?>(null);
@@ -80,7 +81,10 @@ class _SettingsPageState extends State<SettingsPage> {
       SideNavItem(_Section.aiTools, '工具与服务', Icons.extension_outlined),
       SideNavItem(_Section.aiWorkspace, '工作区与联网', Icons.travel_explore),
     ]),
-    SideNavGroup('关于', [SideNavItem(_Section.about, '关于与致谢', Icons.info_outline)]),
+    SideNavGroup('关于', [
+      SideNavItem(_Section.about, '关于与致谢', Icons.info_outline),
+      SideNavItem(_Section.docs, '使用文档', Icons.menu_book_outlined),
+    ]),
   ];
 
   @override
@@ -106,6 +110,7 @@ class _SettingsPageState extends State<SettingsPage> {
               _Section.aiTools => _aiPage('工具与服务', null, const AiToolsSettings()),
               _Section.aiWorkspace => _aiPage('工作区与联网', null, const AiWorkspaceSettings()),
               _Section.about => const _AboutSection(),
+              _Section.docs => const DocsPage(),
             },
           ),
         ),

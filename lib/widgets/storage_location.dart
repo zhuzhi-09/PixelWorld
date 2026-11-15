@@ -9,6 +9,7 @@ import '../core/instance_files.dart';
 import '../core/paths.dart';
 import '../pages/file_manager_page.dart';
 import '../platform.dart';
+import 'maintenance_actions.dart';
 import 'settings_group.dart';
 
 String get _internalGameDir => p.join(Paths.appData, '.minecraft');
@@ -206,6 +207,18 @@ class GameStorageSection extends StatelessWidget {
                   onSelectionChanged: (s) => changeStorage(context, toShared: s.first),
                 ),
               ),
+          ],
+        ),
+        SettingsGroup(
+          title: '维护',
+          children: [
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              leading: const Icon(Icons.cleaning_services_outlined),
+              title: const Text('清理游戏垃圾'),
+              subtitle: const Text('删除日志、崩溃报告与解压出的本地库，不影响存档和模组'),
+              trailing: FilledButton.tonal(onPressed: () => cleanGameJunk(context), child: const Text('清理')),
+            ),
           ],
         ),
         if (!isDesktop)
