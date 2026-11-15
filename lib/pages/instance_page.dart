@@ -3,6 +3,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import '../core/android_storage.dart';
 import 'download_page.dart' show downloadTabRequest;
+import 'lan_transfer_page.dart' show openLanTransfer;
 import 'file_manager_page.dart';
 import 'resources.dart';
 
@@ -26,6 +27,7 @@ import '../core/extra_loaders.dart';
 import '../core/loader_names.dart';
 import '../core/loaders.dart';
 import '../core/optifine_compat.dart';
+import '../core/toolbox.dart' show ServerStatus, queryServer;
 import '../widgets/format.dart';
 import '../widgets/loader_icon.dart';
 import '../widgets/settings_group.dart';
@@ -412,16 +414,30 @@ class _Overview extends StatelessWidget {
         Card.filled(
           color: scheme.surfaceContainerLow,
           margin: EdgeInsets.zero,
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            leading: Icon(Icons.delete_outline, color: scheme.error),
-            title: const Text('删除这个版本'),
-            subtitle: const Text('移到回收站；开启版本隔离时，其中的存档和模组也会一并删除'),
-            trailing: OutlinedButton(
-              style: OutlinedButton.styleFrom(foregroundColor: scheme.error),
-              onPressed: () => _delete(context),
-              child: const Text('删除'),
-            ),
+          child: Column(
+            children: [
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                leading: const Icon(Icons.send_outlined),
+                title: const Text('发送这个实例'),
+                subtitle: const Text('通过局域网把整个实例传到另一台设备'),
+                trailing: FilledButton.tonal(
+                  onPressed: () => openLanTransfer(context, instance: info.id, whole: true),
+                  child: const Text('发送'),
+                ),
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                leading: Icon(Icons.delete_outline, color: scheme.error),
+                title: const Text('删除这个实例'),
+                subtitle: const Text('移到回收站；开启实例隔离时，其中的存档和模组也会一并删除'),
+                trailing: OutlinedButton(
+                  style: OutlinedButton.styleFrom(foregroundColor: scheme.error),
+                  onPressed: () => _delete(context),
+                  child: const Text('删除'),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -547,6 +563,14 @@ class _SetupState extends State<_Setup> {
               contentPadding: pad,
               leading: const Icon(Icons.coffee_outlined),
               title: const Text('Java'),
+              // 跟随全局时写出全局现在的选择，不用再去设置页对照
+              subtitle: _javaKey == 'global'
+                  ? Text(
+                      '跟随全局：${cfg.javaPath.isEmpty ? '自动选择' : cfg.javaPath}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  : null,
               trailing: DropdownMenu<String>(
                 key: ValueKey(_javaKey + _javas.length.toString()),
                 width: 320,
@@ -591,6 +615,13 @@ class _SetupState extends State<_Setup> {
               contentPadding: pad,
               leading: const Icon(Icons.memory_outlined),
               title: const Text('分配方式'),
+              subtitle: _s.memoryMode == 'global'
+                  ? Text(
+                      cfg.memoryMode == 'custom'
+                          ? '跟随全局：自定义 ${ramFromTick(cfg.memoryTick).toStringAsFixed(1)} GB'
+                          : '跟随全局：自动分配',
+                    )
+                  : null,
               trailing: SegmentedButton<String>(
                 segments: const [
                   ButtonSegment(value: 'global', label: Text('跟随全局')),
@@ -813,6 +844,15 @@ class _FilesState extends State<_Files> {
                     onChanged: (v) => setState(() => _query = v),
                   ),
                 ),
+              if (widget.folder == InstanceFolder.saves && _files.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                FilledButton.tonalIcon(
+                  onPressed: () => openLanTransfer(context, instance: widget.info.id, items: {'saves'}),
+                  icon: const Icon(Icons.send_outlined, size: 18),
+                  label: const Text('发送存档'),
+                ),
+                const SizedBox(width: 4),
+              ],
               if (widget.onAdd != null) ...[
                 const SizedBox(width: 8),
                 FilledButton.tonalIcon(
@@ -958,9 +998,51 @@ class _Servers extends StatelessWidget {
               leading: Icon(Icons.dns_outlined, color: scheme.primary),
               title: Text(s.name),
               subtitle: Text(s.address),
+              // 直接显示在线人数和延迟，不用再去「工具 → 服务器查询」
+              trailing: _ServerPing(address: s.address),
             ),
           ),
       ],
+    );
+  }
+}
+
+/// 服务器列表里的一行：查询在线人数和延迟
+class _ServerPing extends StatefulWidget {
+  const _ServerPing({required this.address});
+
+  final String address;
+
+  @override
+  State<_ServerPing> createState() => _ServerPingState();
+}
+
+class _ServerPingState extends State<_ServerPing> {
+  late Future<ServerStatus> _status = queryServer(widget.address);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return FutureBuilder<ServerStatus>(
+      future: _status,
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2));
+        }
+        final s = snap.data;
+        return InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => setState(() => _status = queryServer(widget.address)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Text(
+              s == null ? '无法连接' : '在线 ${s.online}/${s.max} · ${s.latency} ms',
+              style: theme.textTheme.labelMedium?.copyWith(color: s == null ? scheme.error : scheme.primary),
+            ),
+          ),
+        );
+      },
     );
   }
 }

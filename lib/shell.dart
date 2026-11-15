@@ -40,9 +40,9 @@ enum MainPage { home, download, settings, tools, ai, files }
 enum SubPage { versions, log, instance, tasks, diagnose }
 
 const _subTitles = {
-  SubPage.versions: '版本选择',
+  SubPage.versions: '实例',
   SubPage.log: '游戏日志',
-  SubPage.instance: '版本详情',
+  SubPage.instance: '实例详情',
   SubPage.tasks: '任务',
   SubPage.diagnose: '错误分析',
 };
@@ -386,7 +386,11 @@ class _TopBarState extends State<_TopBar> {
         final text = sub == SubPage.instance ? '版本详情' : _subTitles[sub]!;
         return Row(
           children: [
-            IconButton(tooltip: '返回', onPressed: widget.onBack, icon: Icon(Icons.arrow_back, size: 20, color: fg)),
+            IconButton(
+              tooltip: '返回',
+              onPressed: widget.onBack,
+              icon: Icon(Icons.arrow_back, size: 20, color: fg),
+            ),
             const SizedBox(width: 2),
             Flexible(
               child: Text(

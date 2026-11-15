@@ -375,7 +375,8 @@ class _HeroCard extends StatelessWidget {
 
 /// 「12 个模组 · Zink 渲染 · 14 小时前玩过」
 /// 版本 mods 文件夹里的 jar 数量；读不到时为 null
-Future<int?> _modCount(AppState state, InstanceInfo version) async {
+/// 实例 mods 文件夹里的模组数（读不到时为 null）
+Future<int?> instanceModCount(AppState state, InstanceInfo version) async {
   try {
     final dir = Directory(p.join(await state.gameDirOf(version), 'mods'));
     if (!dir.existsSync()) return 0;
@@ -405,7 +406,7 @@ class _VersionFacts extends StatelessWidget {
       if (pref != 'auto') renderer = androidRenderers[pref]?.split('（').first;
     }
     return FutureBuilder<int?>(
-      future: version.loader == Loader.vanilla ? Future.value(null) : _modCount(state, version),
+      future: version.loader == Loader.vanilla ? Future.value(null) : instanceModCount(state, version),
       builder: (context, snap) {
         final parts = [
           if (snap.data != null) '${snap.data} 个模组',
@@ -1991,7 +1992,7 @@ class _VersionInfoCard extends StatelessWidget {
             ),
             row('版本', describeVersion(version), first: true),
             FutureBuilder<int?>(
-              future: version.loader == Loader.vanilla ? Future.value(null) : _modCount(state, version),
+              future: version.loader == Loader.vanilla ? Future.value(null) : instanceModCount(state, version),
               builder: (context, snap) => row(
                 '模组',
                 version.loader == Loader.vanilla ? '原版，不加载模组' : (snap.data == null ? '—' : '${snap.data} 个'),

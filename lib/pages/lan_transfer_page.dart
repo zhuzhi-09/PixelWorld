@@ -11,10 +11,22 @@ import '../core/instance.dart';
 import '../core/lan_transfer.dart';
 import '../core/loader_names.dart';
 import '../widgets/format.dart';
+import '../shell.dart';
 import '../widgets/settings_group.dart';
+import 'tools_page.dart' show toolsSectionRequest;
 
 /// 收到但还没导入的传输包；离开页面后仍保留，直到导入、删除或关闭启动器
 final _received = <ReceivedTransfer>[];
+
+/// 从实例详情「发送」进来时预先选好的内容（实例、整个实例或哪些内容），打开页面后清空
+final lanTransferRequest = ValueNotifier<({String instance, bool whole, Set<String>? items})?>(null);
+
+/// 打开「工具 → 局域网互传」，并选好要发送的实例和内容
+void openLanTransfer(BuildContext context, {required String instance, bool whole = false, Set<String>? items}) {
+  lanTransferRequest.value = (instance: instance, whole: whole, items: items);
+  toolsSectionRequest.value = 'transfer';
+  ShellNav.of(context).goMain(MainPage.tools);
+}
 
 /// 局域网互传：接收方显示 IP、随机端口和配对码；发送方选择版本和内容后发送
 class LanTransferPage extends StatefulWidget {
@@ -39,6 +51,23 @@ class _LanTransferPageState extends State<LanTransferPage> {
   final _address = TextEditingController();
   final _code = TextEditingController();
   var _sending = false;
+  ({String instance, bool whole, Set<String>? items})? _preset;
+
+  @override
+  void initState() {
+    super.initState();
+    _preset = lanTransferRequest.value;
+    lanTransferRequest.value = null;
+    if (_preset != null) {
+      _whole = _preset!.whole;
+      if (_preset!.items != null) {
+        _items
+          ..clear()
+          ..addAll(_preset!.items!);
+      }
+    }
+  }
+
   String? _sendStatus;
   double? _sendProgress;
 
@@ -318,6 +347,10 @@ class _LanTransferPageState extends State<LanTransferPage> {
     final state = AppScope.of(context);
     final theme = Theme.of(context);
     final muted = theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+    if (_preset != null) {
+      _version = state.instance(_preset!.instance) ?? _version;
+      _preset = null;
+    }
     _version ??= state.versions.firstOrNull;
     if (_version != null && !state.versions.contains(_version)) _version = state.versions.firstOrNull;
     final server = _server;

@@ -39,8 +39,31 @@ class _Tool {
   final IconData icon;
 }
 
+/// 从别的页面跳到工具的某一项（值为 _Section 的名字，例如 transfer），打开后清空
+final toolsSectionRequest = ValueNotifier<String?>(null);
+
 class _ToolsPageState extends State<ToolsPage> {
   _Section? _section;
+
+  @override
+  void initState() {
+    super.initState();
+    toolsSectionRequest.addListener(_onRequest);
+    _onRequest();
+  }
+
+  @override
+  void dispose() {
+    toolsSectionRequest.removeListener(_onRequest);
+    super.dispose();
+  }
+
+  void _onRequest() {
+    final s = _Section.values.asNameMap()[toolsSectionRequest.value];
+    if (s == null) return;
+    toolsSectionRequest.value = null;
+    if (mounted) setState(() => _section = s);
+  }
 
   // 任务历史在顶栏的任务面板里；清理游戏垃圾、桌面快捷方式、使用文档在设置里
   static const _groups = [
