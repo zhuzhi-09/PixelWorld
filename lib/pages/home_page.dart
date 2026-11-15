@@ -282,7 +282,7 @@ class _HeroCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '切换版本',
+                            '切换实例',
                             style: theme.textTheme.labelMedium?.copyWith(color: white.withValues(alpha: .8)),
                           ),
                           Icon(Icons.expand_more, size: 16, color: white.withValues(alpha: .8)),
@@ -295,7 +295,7 @@ class _HeroCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(right: v == null ? 0 : 76),
                   child: Text(
-                    v == null ? '还没有选择版本' : versionTitle(v),
+                    v == null ? '还没有选择实例' : versionTitle(v),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.headlineSmall?.copyWith(color: white, fontWeight: FontWeight.w800),
@@ -317,7 +317,7 @@ class _HeroCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 if (v == null)
                   Text(
-                    '先下载或选择一个版本，准备好就开始',
+                    '先安装或选择一个实例，准备好就开始',
                     style: theme.textTheme.bodySmall?.copyWith(color: white.withValues(alpha: .75)),
                   )
                 else
@@ -336,7 +336,7 @@ class _HeroCard extends StatelessWidget {
                         minimumSize: const Size(0, 44),
                       ),
                       icon: const Icon(Icons.tune, size: 18),
-                      label: const Text('版本设置'),
+                      label: const Text('实例设置'),
                     ),
                     const SizedBox(width: 8),
                     PopupMenuButton<String>(
@@ -347,8 +347,8 @@ class _HeroCard extends StatelessWidget {
                         if (value == 'folder') onFolder?.call();
                       },
                       itemBuilder: (context) => [
-                        const PopupMenuItem(value: 'versions', child: Text('版本选择')),
-                        PopupMenuItem(value: 'folder', enabled: onFolder != null, child: const Text('打开版本文件夹')),
+                        const PopupMenuItem(value: 'versions', child: Text('实例列表')),
+                        PopupMenuItem(value: 'folder', enabled: onFolder != null, child: const Text('打开实例文件夹')),
                         const PopupMenuItem(value: 'log', child: Text('游戏日志')),
                       ],
                       child: Container(
@@ -822,7 +822,7 @@ class _WorldCard extends StatelessWidget {
                 right: 8,
                 top: 46,
                 child: IconButton.filled(
-                  tooltip: '进入这个存档的版本',
+                  tooltip: '切换到这个存档所在的实例',
                   onPressed: onPlay,
                   style: IconButton.styleFrom(minimumSize: const Size(40, 40), fixedSize: const Size(40, 40)),
                   icon: const Icon(Icons.rocket_launch, size: 19),
@@ -1243,13 +1243,13 @@ class _WallpaperFold extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      v == null ? '还没有选择版本' : versionTitle(v),
+                      v == null ? '还没有选择实例' : versionTitle(v),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                     ),
                     if (v == null)
-                      Text('先下载或选择一个版本', style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant))
+                      Text('先安装或选择一个实例', style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant))
                     else
                       _VersionFacts(state: state, version: v, latest: latest, color: scheme.onSurfaceVariant),
                   ],
@@ -1290,7 +1290,7 @@ class _WallpaperFold extends StatelessWidget {
               OutlinedButton(
                 onPressed: onSettings,
                 style: OutlinedButton.styleFrom(minimumSize: const Size(0, 36)),
-                child: const Text('版本设置'),
+                child: const Text('实例设置'),
               ),
             ],
           ),
@@ -1671,7 +1671,7 @@ class _DockWorldState extends State<_DockWorld> {
                       ),
                       if (_hover)
                         IconButton(
-                          tooltip: '进入这个存档的版本',
+                          tooltip: '切换到这个存档所在的实例',
                           onPressed: widget.onPlay,
                           style: IconButton.styleFrom(
                             backgroundColor: scheme.primaryFixed,
@@ -1763,7 +1763,7 @@ class _DesktopHero extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        v == null ? '还没有选择版本' : versionTitle(v),
+                        v == null ? '还没有选择实例' : versionTitle(v),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
@@ -1785,7 +1785,7 @@ class _DesktopHero extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             if (v == null)
-              Text('先下载或选择一个版本，准备好就开始', style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant))
+              Text('先安装或选择一个实例，准备好就开始', style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant))
             else
               _VersionFacts(state: state, version: v, latest: latest, color: scheme.onSurfaceVariant),
             const SizedBox(height: 14),
@@ -1797,7 +1797,7 @@ class _DesktopHero extends StatelessWidget {
                   onPressed: onSettings,
                   style: OutlinedButton.styleFrom(minimumSize: const Size(0, 44)),
                   icon: const Icon(Icons.tune, size: 18),
-                  label: const Text('版本设置'),
+                  label: const Text('实例设置'),
                 ),
                 const SizedBox(width: 8),
                 PopupMenuButton<String>(
@@ -1808,8 +1808,8 @@ class _DesktopHero extends StatelessWidget {
                     if (value == 'folder') onFolder?.call();
                   },
                   itemBuilder: (context) => [
-                    const PopupMenuItem(value: 'versions', child: Text('版本选择')),
-                    PopupMenuItem(value: 'folder', enabled: onFolder != null, child: const Text('打开版本文件夹')),
+                    const PopupMenuItem(value: 'versions', child: Text('实例列表')),
+                    PopupMenuItem(value: 'folder', enabled: onFolder != null, child: const Text('打开实例文件夹')),
                     const PopupMenuItem(value: 'log', child: Text('游戏日志')),
                   ],
                   child: Container(
@@ -1919,7 +1919,7 @@ class _WorldTileState extends State<_WorldTile> {
                       ),
                     ),
                     IconButton(
-                      tooltip: '进入这个存档的版本',
+                      tooltip: '切换到这个存档所在的实例',
                       onPressed: widget.onPlay,
                       style: IconButton.styleFrom(
                         backgroundColor: _hover ? scheme.primaryFixed : scheme.onSurface.withValues(alpha: .06),
@@ -1985,12 +1985,12 @@ class _VersionInfoCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text('当前版本', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text('当前实例', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                 const Spacer(),
-                TextButton(onPressed: onSettings, child: const Text('版本设置 ›')),
+                TextButton(onPressed: onSettings, child: const Text('实例设置 ›')),
               ],
             ),
-            row('版本', describeVersion(version), first: true),
+            row('类型', describeVersion(version), first: true),
             FutureBuilder<int?>(
               future: version.loader == Loader.vanilla ? Future.value(null) : instanceModCount(state, version),
               builder: (context, snap) => row(
@@ -1999,7 +1999,7 @@ class _VersionInfoCard extends StatelessWidget {
               ),
             ),
             row('最近游玩', latest == null ? '还没玩过' : '${latest!.name} · ${_timeAgo(latest!.modified)}'),
-            row('版本 ID', version.id),
+            row('实例 ID', version.id),
           ],
         ),
       ),

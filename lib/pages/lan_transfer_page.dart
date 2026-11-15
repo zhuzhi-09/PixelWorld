@@ -129,8 +129,8 @@ class _LanTransferPageState extends State<LanTransferPage> {
     try {
       if (m.wholeVersion) {
         final ok = await _confirm(
-          '导入为新版本',
-          '将「${m.version}」导入为新版本，并开启版本隔离。\n'
+          '导入为新实例',
+          '将「${m.version}」导入为新实例，并开启实例隔离。\n'
               '共 ${m.files.length} 个文件，${formatSize(m.bytes)}。\n\n'
               '${m.parents.isEmpty ? '' : '依赖的原版 ${m.parents.join('、')} 也会一起导入（本机已有时保留本机的）。\n'}'
               '游戏本体依赖的库文件和资源文件没有一起传输，第一次启动时会自动补全。',
@@ -142,7 +142,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
         );
         await state.refreshVersions();
         _drop(t);
-        if (mounted) toast(context, '已导入版本「$id」');
+        if (mounted) toast(context, '已导入实例「$id」');
       } else {
         final target = await _pickTarget(state, m);
         if (target == null) return;
@@ -223,7 +223,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
   Future<InstanceInfo?> _pickTarget(AppState state, TransferManifest m) {
     final versions = state.versions;
     if (versions.isEmpty) {
-      toast(context, '还没有版本，请先安装一个版本再导入');
+      toast(context, '还没有实例，请先安装一个实例再导入');
       return Future.value();
     }
     bool loaderOk(InstanceInfo v) => m.loader == null || v.loader.name == m.loader;
@@ -234,13 +234,13 @@ class _LanTransferPageState extends State<LanTransferPage> {
         versions.where((v) => v.id == m.version).firstOrNull ??
         versions.first;
     String? warning(InstanceInfo v) {
-      final from = m.describe ?? '发送方的版本';
+      final from = m.describe ?? '发送方的实例';
       if (!loaderOk(v) && m.items.contains('mods')) {
         return '这些模组来自 $from，但「${v.id}」是 ${describeVersion(v)}，导入后模组不会被加载。'
-            '建议先在这台设备上安装相同的加载器，或者让对方改用「整个版本」发送。';
+            '建议先在这台设备上安装相同的加载器，或者让对方改用「整个实例」发送。';
       }
-      if (!loaderOk(v)) return '发送方的版本是 $from，「${v.id}」是 ${describeVersion(v)}，加载器不同。';
-      if (!gameOk(v)) return '发送方的版本是 $from，「${v.id}」是 ${describeVersion(v)}，游戏版本不同，模组和存档可能不兼容。';
+      if (!loaderOk(v)) return '发送方的实例是 $from，「${v.id}」是 ${describeVersion(v)}，加载器不同。';
+      if (!gameOk(v)) return '发送方的实例是 $from，「${v.id}」是 ${describeVersion(v)}，游戏版本不同，模组和存档可能不兼容。';
       return null;
     }
 
@@ -249,7 +249,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, set) => AlertDialog(
-          title: const Text('导入到哪个版本'),
+          title: const Text('导入到哪个实例'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,7 +263,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
                 onChanged: (v) => set(() => chosen = v!),
               ),
               const SizedBox(height: 12),
-              Text('将替换这个版本的：$what\n原来的内容会先备份到游戏文件夹的 backups 中。'),
+              Text('将替换这个实例的：$what\n原来的内容会先备份到游戏文件夹的 backups 中。'),
               if (warning(chosen) case final w?) ...[
                 const SizedBox(height: 12),
                 Row(
@@ -290,7 +290,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
 
   Future<void> _send(AppState state) async {
     final v = _version;
-    if (v == null) return toast(context, '请选择要发送的版本');
+    if (v == null) return toast(context, '请选择要发送的实例');
     final Uri base;
     try {
       base = parseTransferAddress(_address.text);
@@ -358,7 +358,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
     return ListView(
       padding: const EdgeInsets.all(28),
       children: [
-        Text('在同一个局域网（同一个 Wi-Fi）中的两台设备之间传输版本、模组、配置和存档。', style: muted),
+        Text('在同一个局域网（同一个 Wi-Fi）中的两台设备之间传输实例、模组、配置和存档。', style: muted),
         const SizedBox(height: 16),
         SettingsGroup(
           title: '接收',
@@ -430,7 +430,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
                 leading: Icon(t.manifest.wholeVersion ? Icons.inventory_2_outlined : Icons.folder_zip_outlined),
                 title: Text(
                   t.manifest.wholeVersion
-                      ? '整个版本「${t.manifest.version}」'
+                      ? '整个实例「${t.manifest.version}」'
                       : '「${t.manifest.version}」的${t.manifest.items.map((i) => transferItems[i] ?? i).join('、')}',
                 ),
                 subtitle: Text(
@@ -457,7 +457,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (state.versions.isEmpty)
-                    const Text('还没有可以发送的版本')
+                    const Text('还没有可以发送的实例')
                   else
                     DropdownButton<InstanceInfo>(
                       // 鼠标选完后不保留焦点高亮（否则会留一块灰底）
@@ -471,7 +471,7 @@ class _LanTransferPageState extends State<LanTransferPage> {
                   SegmentedButton<bool>(
                     segments: const [
                       ButtonSegment(value: false, label: Text('选择内容'), icon: Icon(Icons.checklist)),
-                      ButtonSegment(value: true, label: Text('整个版本'), icon: Icon(Icons.inventory_2_outlined)),
+                      ButtonSegment(value: true, label: Text('整个实例'), icon: Icon(Icons.inventory_2_outlined)),
                     ],
                     selected: {_whole},
                     onSelectionChanged: _sending ? null : (s) => setState(() => _whole = s.first),
@@ -479,8 +479,8 @@ class _LanTransferPageState extends State<LanTransferPage> {
                   const SizedBox(height: 8),
                   Text(
                     _whole
-                        ? '打包版本文件夹（不含日志和崩溃报告）。对方会导入为新版本并开启版本隔离。'
-                              '\n如果这个版本没有开启版本隔离，还会附带下面选中的内容。'
+                        ? '打包实例文件夹（不含日志和崩溃报告）。对方会导入为新实例并开启实例隔离。'
+                              '\n如果这个实例没有开启实例隔离，还会附带下面选中的内容。'
                         : '对方导入时会替换选中的内容，替换前自动备份。',
                     style: muted,
                   ),

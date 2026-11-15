@@ -69,7 +69,7 @@ Future<void> changeStorage(BuildContext context, {required bool toShared}) async
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('移动游戏文件'),
-        content: Text('把现在游戏文件夹中的版本、存档与资源移到新位置吗？\n\n$from\n→ $to'),
+        content: Text('把现在游戏文件夹中的实例、存档与资源移到新位置吗？\n\n$from\n→ $to'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('只切换，不移动')),

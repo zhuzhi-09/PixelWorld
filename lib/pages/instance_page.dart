@@ -118,7 +118,7 @@ class _InstancePageState extends State<InstancePage> {
     final state = AppScope.of(context);
     final info = state.instance(state.instanceId);
     if (info == null) {
-      return const Center(child: Text('这个版本已不存在'));
+      return const Center(child: Text('这个实例已不存在'));
     }
     final tabs = <(_Section, String)>[
       // 与 PCL 一样，没有加载器的版本不显示模组
@@ -129,7 +129,7 @@ class _InstancePageState extends State<InstancePage> {
       (_Section.screenshots, '截图'),
       (_Section.schematics, '投影'),
       (_Section.servers, '服务器'),
-      (_Section.setup, '版本设置'),
+      (_Section.setup, '实例设置'),
       (_Section.overview, '概览'),
     ];
     final section = tabs.any((t) => t.$1 == _section) ? _section! : tabs.first.$1;
@@ -305,7 +305,7 @@ class _Overview extends StatelessWidget {
       builder: (context) => AlertDialog(
         icon: const Icon(Icons.delete_outline),
         title: Text('删除 ${info.id}？'),
-        content: const Text('版本文件夹会移到回收站。开启版本隔离时，其中的存档和模组也会一并删除。'),
+        content: const Text('实例文件夹会移到回收站。开启实例隔离时，其中的存档和模组也会一并删除。'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('取消')),
           FilledButton(
@@ -357,11 +357,11 @@ class _Overview extends StatelessWidget {
             ),
             if (current)
               Chip(
-                label: const Text('当前版本'),
+                label: const Text('当前实例'),
                 avatar: Icon(Icons.check, color: scheme.primary),
               )
             else
-              FilledButton.tonal(onPressed: () => state.selectVersion(info.id), child: const Text('设为当前版本')),
+              FilledButton.tonal(onPressed: () => state.selectVersion(info.id), child: const Text('设为当前实例')),
           ],
         ),
         const SizedBox(height: 16),
@@ -374,7 +374,7 @@ class _Overview extends StatelessWidget {
               children: [
                 row('类型', describeVersion(info)),
                 row('游戏版本', info.gameVersion),
-                row('版本隔离', info.isolation == null ? '首次启动时决定' : (info.isolation! ? '已开启' : '已关闭')),
+                row('实例隔离', info.isolation == null ? '首次启动时决定' : (info.isolation! ? '已开启' : '已关闭')),
                 row('运行目录', gameDir),
                 // 加载器版本文件里的时间是加载器的构建时间，只对原版显示
                 if (info.releaseTime != null && info.loader == Loader.vanilla)
@@ -393,7 +393,7 @@ class _Overview extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: () => openInFileManager(versionDir),
               icon: const Icon(Icons.folder_open),
-              label: const Text('版本文件夹'),
+              label: const Text('实例文件夹'),
             ),
             for (final f in [
               InstanceFolder.saves,
@@ -532,7 +532,7 @@ class _SetupState extends State<_Setup> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  '这些设置保存在版本文件夹的 PCL/config.v1.yml 中，与 PCL-CE 互通',
+                  '这些设置保存在实例文件夹的 PCL/config.v1.yml 中，与 PCL-CE 互通',
                   style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
                 ),
               ),
@@ -545,9 +545,9 @@ class _SetupState extends State<_Setup> {
             ListTile(
               contentPadding: pad,
               leading: const Icon(Icons.call_split),
-              title: const Text('版本隔离'),
+              title: const Text('实例隔离'),
               subtitle: Text(
-                _s.isolation == null ? '尚未决定：首次启动时按全局策略「${isolationModes[cfg.isolationMode]}」决定，之后固定' : '运行目录为版本文件夹',
+                _s.isolation == null ? '尚未决定：首次启动时按全局策略「${isolationModes[cfg.isolationMode]}」决定，之后固定' : '运行目录为实例文件夹',
               ),
               trailing: SegmentedButton<bool>(
                 emptySelectionAllowed: true,

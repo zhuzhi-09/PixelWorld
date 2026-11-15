@@ -18,8 +18,8 @@ const defaultJvmArgs =
 const pclDefaultJvmArgs = defaultJvmArgs;
 
 /// 版本隔离默认策略：
-/// 0 关闭 / 1 仅隔离可安装 Mod 的版本 / 2 仅隔离非正式版 / 3 隔离非正式版与可安装 Mod 的版本 / 4 隔离所有版本
-const isolationModes = {0: '关闭', 1: '隔离可安装 Mod 的版本', 2: '隔离非正式版', 3: '隔离可安装 Mod 的版本与非正式版', 4: '隔离所有版本'};
+/// 0 关闭 / 1 仅隔离可安装模组的实例 / 2 仅隔离非正式版 / 3 隔离非正式版与可安装 Mod 的版本 / 4 隔离所有版本
+const isolationModes = {0: '关闭', 1: '隔离可安装模组的实例', 2: '隔离非正式版', 3: '隔离可安装模组的实例与非正式版', 4: '隔离所有实例'};
 
 class GameFolder {
   GameFolder({required this.name, required this.path, required this.custom});

@@ -496,7 +496,7 @@ class _ResourceDetailState extends State<ResourceDetail> {
 
   String? _warning(InstanceInfo? inst) {
     if (_type == ResourceType.modpack) return null;
-    if (inst == null) return '还没有安装任何游戏版本';
+    if (inst == null) return '还没有安装任何实例';
     if (_type == ResourceType.mod && modrinthLoaders(inst.loader).isEmpty) return '${inst.id} 没有安装模组加载器，模组不会生效';
     if (_type == ResourceType.datapack && _worlds.isEmpty) return '${inst.id} 还没有存档，请先进入游戏创建一个世界';
     return null;
@@ -625,7 +625,7 @@ class _ResourceDetailState extends State<ResourceDetail> {
                           },
                         )
                       else
-                        Chip(avatar: const Icon(Icons.inventory_2_outlined, size: 18), label: const Text('将安装为新的独立版本')),
+                        Chip(avatar: const Icon(Icons.inventory_2_outlined, size: 18), label: const Text('将安装为新的实例')),
                       if (_type == ResourceType.datapack && _worlds.isNotEmpty)
                         DropdownMenu<String>(
                           key: ValueKey(_instanceId),
