@@ -154,10 +154,12 @@ class _HomePageState extends State<HomePage> {
                   onFolder: version == null ? null : _openFolder,
                 ),
                 right: _SidePanel(
-                  onInstallMods: () {
-                    downloadTabRequest.value = 'mods';
-                    ShellNav.of(context).goMain(MainPage.download);
-                  },
+                  onInstallMods: version == null
+                      ? () {
+                          downloadTabRequest.value = 'mods';
+                          ShellNav.of(context).goMain(MainPage.download);
+                        }
+                      : () => _openInstance('add-mods'),
                   onManageMods: version == null ? null : () => _openInstance('mods'),
                   onFolder: version == null ? null : _openFolder,
                   onLog: () => ShellNav.of(context).open(SubPage.log),
