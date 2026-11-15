@@ -141,10 +141,7 @@ class _ToolsPageState extends State<ToolsPage> {
                   for (final t in tools)
                     SizedBox(
                       width: w,
-                      child: _ToolTile(
-                        tool: t,
-                        onTap: () => setState(() => _section = t.section),
-                      ),
+                      child: _ToolTile(tool: t, onTap: () => setState(() => _section = t.section)),
                     ),
                 ],
               );

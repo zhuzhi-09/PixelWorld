@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../core/android_storage.dart';
 import 'file_manager_page.dart';
+
 import 'package:flutter/material.dart';
 
 import '../app_info.dart';
@@ -684,7 +685,10 @@ class MiscSection extends StatelessWidget {
                 leading: const Icon(Icons.shortcut),
                 title: const Text('创建桌面快捷方式'),
                 subtitle: const Text('在桌面创建启动器的快捷方式'),
-                trailing: FilledButton.tonal(onPressed: () => createShortcutWithToast(context), child: const Text('创建')),
+                trailing: FilledButton.tonal(
+                  onPressed: () => createShortcutWithToast(context),
+                  child: const Text('创建'),
+                ),
               ),
             ],
           ),

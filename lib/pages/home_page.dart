@@ -943,8 +943,7 @@ class _DesktopHomeState extends State<_DesktopHome> {
         // 第一屏高度 = 可见高度；主卡片那一行吃掉剩余高度，但有上下限，超出部分让内容整体垂直居中
         final foldH = math.max(box.maxHeight, 430.0);
         final topH = (foldH - _headerH - worldsH - _moreH - _gap * 2 - 16).clamp(176.0, foldH > 820 ? 380.0 : 340.0);
-        final bg = BackgroundScope.activeOf(context);
-        final wallpaper = bg != null && bg.controller.wallpaperHome;
+        final layout = cfg.homeLayout;
         void more() => _scroll.animateTo(
           math.min(foldH, _scroll.position.maxScrollExtent),
           duration: const Duration(milliseconds: 350),
@@ -954,7 +953,25 @@ class _DesktopHomeState extends State<_DesktopHome> {
           controller: _scroll,
           padding: _pad,
           children: [
-            if (wallpaper)
+            if (layout == 'minimal')
+              SizedBox(
+                height: foldH,
+                child: _MinimalFold(
+                  state: widget.state,
+                  version: widget.version,
+                  latest: widget.latest,
+                  onLaunch: widget.onLaunch,
+                  onVersions: widget.onVersions,
+                  onSettings: widget.onSettings,
+                  onSaves: widget.onSaves,
+                  onManageMods: widget.onManageMods,
+                  onLog: widget.onLog,
+                  onFolder: widget.onFolder,
+                  onInstallMods: widget.onInstallMods,
+                  onMore: more,
+                ),
+              )
+            else if (layout == 'split')
               SizedBox(
                 height: foldH,
                 child: _WallpaperFold(
@@ -1368,6 +1385,139 @@ class _WallpaperFold extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           dock,
+        ],
+      ),
+    );
+  }
+}
+
+/// 极简布局的第一屏：只在底部居中留一条——当前实例（点名字切换）、全部存档、实例设置、更多和开始游戏。
+/// 往下滚动的内容和其他布局一样
+class _MinimalFold extends StatelessWidget {
+  const _MinimalFold({
+    required this.state,
+    required this.version,
+    required this.latest,
+    required this.onLaunch,
+    required this.onVersions,
+    required this.onSettings,
+    required this.onSaves,
+    required this.onManageMods,
+    required this.onLog,
+    required this.onFolder,
+    required this.onInstallMods,
+    required this.onMore,
+  });
+
+  final AppState state;
+  final InstanceInfo? version;
+  final RecentWorld? latest;
+  final VoidCallback onLaunch;
+  final VoidCallback onVersions;
+  final VoidCallback? onSettings;
+  final VoidCallback? onSaves;
+  final VoidCallback? onManageMods;
+  final VoidCallback onLog;
+  final VoidCallback? onFolder;
+  final VoidCallback onInstallMods;
+  final VoidCallback onMore;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final v = version;
+    Widget tool(IconData icon, String tip, VoidCallback? onTap) =>
+        IconButton(tooltip: tip, onPressed: onTap, icon: Icon(icon, size: 20), color: scheme.onSurfaceVariant);
+    final bar = GlassPanel(
+      color: scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(32),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+        child: SizedBox(
+          height: 48,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (v != null) ...[
+                VersionIcon(info: v, versionDir: state.paths.versionDir(v.id), size: 40, radius: 12),
+                const SizedBox(width: 12),
+              ],
+              // 名字和下面的「切换」一起点，打开实例选择
+              InkWell(
+                onTap: onVersions,
+                borderRadius: BorderRadius.circular(8),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 240),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          v == null ? '还没有选择实例' : versionTitle(v),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('切换实例', style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+                            Icon(Icons.expand_more, size: 14, color: scheme.onSurfaceVariant),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: 1,
+                height: 26,
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                color: scheme.outlineVariant.withValues(alpha: .5),
+              ),
+              tool(Icons.grid_view_rounded, '全部存档', onSaves),
+              tool(Icons.tune, '实例设置', onSettings),
+              PopupMenuButton<VoidCallback?>(
+                tooltip: '更多',
+                icon: Icon(Icons.more_horiz, size: 20, color: scheme.onSurfaceVariant),
+                onSelected: (f) => f?.call(),
+                itemBuilder: (context) => [
+                  PopupMenuItem(value: onInstallMods, child: const Text('装模组')),
+                  PopupMenuItem(value: onManageMods, child: const Text('管理模组')),
+                  PopupMenuItem(value: onFolder, child: const Text('打开文件夹')),
+                  PopupMenuItem(value: onLog, child: const Text('查看日志')),
+                  PopupMenuItem(value: () => showNoticesDialog(context), child: const Text('启动器公告')),
+                ],
+              ),
+              const SizedBox(width: 8),
+              _DockLaunch(state: state, version: v, onLaunch: onLaunch),
+            ],
+          ),
+        ),
+      ),
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        children: [
+          const Spacer(),
+          Center(
+            child: OnBackground(
+              builder: (context, _, muted) => TextButton.icon(
+                onPressed: onMore,
+                style: TextButton.styleFrom(foregroundColor: muted ?? scheme.onSurfaceVariant),
+                iconAlignment: IconAlignment.end,
+                icon: const Icon(Icons.expand_more, size: 18),
+                label: const Text('向下滚动查看更多'),
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          bar,
         ],
       ),
     );

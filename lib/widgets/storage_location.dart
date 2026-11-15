@@ -195,9 +195,7 @@ class GameStorageSection extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 leading: const Icon(Icons.smartphone),
                 title: const Text('存放位置'),
-                subtitle: Text(
-                  shared ? '手机存储：卸载启动器后仍然保留' : '应用内部：卸载启动器时会一起删除，建议移到手机存储',
-                ),
+                subtitle: Text(shared ? '手机存储：卸载启动器后仍然保留' : '应用内部：卸载启动器时会一起删除，建议移到手机存储'),
                 trailing: SegmentedButton<bool>(
                   segments: const [
                     ButtonSegment(value: true, label: Text('手机存储')),
