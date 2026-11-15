@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:ui' show PlatformDispatcher;
 
 import '../core/android_storage.dart';
+import 'download_page.dart' show downloadTabRequest;
 import 'file_manager_page.dart';
+import 'resources.dart';
 
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,7 @@ import '../core/instance_config.dart';
 import '../core/instance_files.dart';
 import '../core/java.dart';
 import '../core/memory.dart';
+import '../core/modrinth.dart' show ResourceType;
 import '../shell.dart';
 import '../core/extra_loaders.dart';
 import '../core/loader_names.dart';
@@ -39,8 +42,16 @@ const _folders = {
   _Section.schematics: InstanceFolder.schematics,
 };
 
-/// 打开版本详情时要先显示的标签（例如首页「全部存档」打开存档页），打开后清空
+/// 打开实例详情时要先显示的标签（例如首页「全部存档」打开存档页），打开后清空。
+/// add-mods 表示打开模组页并直接进入「添加模组」
 final instanceSectionRequest = ValueNotifier<String?>(null);
+
+/// 这些标签可以「添加」：在实例里直接浏览 Modrinth，只显示适配这个实例的资源
+const _addable = {
+  _Section.mods: ResourceType.mod,
+  _Section.resourcepacks: ResourceType.resourcepack,
+  _Section.shaderpacks: ResourceType.shader,
+};
 
 /// 版本详情：顶部是封面、名称和常用操作，下面一排标签（模组、存档、资源包……、设置、概览）
 class InstancePage extends StatefulWidget {
@@ -53,12 +64,30 @@ class InstancePage extends StatefulWidget {
 class _InstancePageState extends State<InstancePage> {
   _Section? _section;
 
+  /// 正在「添加」资源（显示锁定到这个实例的资源浏览）
+  ResourceType? _adding;
+
   @override
   void initState() {
     super.initState();
     final want = instanceSectionRequest.value;
     instanceSectionRequest.value = null;
-    if (want != null) _section = _Section.values.where((s) => s.name == want).firstOrNull;
+    if (want == 'add-mods') {
+      _section = _Section.mods;
+      _adding = ResourceType.mod;
+    } else if (want != null) {
+      _section = _Section.values.where((s) => s.name == want).firstOrNull;
+    }
+  }
+
+  /// 改为普通浏览：到下载页的对应分类（适配当前实例的筛选仍然可以开关）
+  void _unlock(ResourceType type) {
+    downloadTabRequest.value = switch (type) {
+      ResourceType.resourcepack => 'resourcePacks',
+      ResourceType.shader => 'shaders',
+      _ => 'mods',
+    };
+    ShellNav.of(context).goMain(MainPage.download);
   }
 
   Future<void> _launch(InstanceInfo info) async {
@@ -197,19 +226,56 @@ class _InstancePageState extends State<InstancePage> {
                 const EdgeInsets.all(10),
               ),
               SizedBox(height: glass ? 8 : 4),
-              PageTabs<_Section>(tabs: tabs, value: section, onChanged: (s) => setState(() => _section = s)),
+              PageTabs<_Section>(
+                tabs: tabs,
+                value: section,
+                onChanged: (s) => setState(() {
+                  _section = s;
+                  _adding = null;
+                }),
+              ),
               SizedBox(height: glass ? 8 : 6),
               Expanded(
                 child: panel(
                   dir == null
                       ? const Center(child: CircularProgressIndicator())
+                      : _adding != null && _addable[section] == _adding
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton.icon(
+                                onPressed: () => setState(() => _adding = null),
+                                icon: const Icon(Icons.arrow_back, size: 18),
+                                label: Text('返回${folder!.label}列表'),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Expanded(
+                              child: ResourceBrowser(
+                                key: ValueKey('add-${info.id}-$section'),
+                                type: _adding!,
+                                target: info.id,
+                                onUnlock: () => _unlock(_adding!),
+                              ),
+                            ),
+                          ],
+                        )
                       : KeyedSubtree(
                           key: ValueKey('${info.id}-$section'),
                           child: switch (section) {
                             _Section.overview => _Overview(info: info, gameDir: dir),
                             _Section.setup => _Setup(info: info),
                             _Section.servers => _Servers(gameDir: dir),
-                            _ => _Files(info: info, gameDir: dir, folder: folder!),
+                            _ => _Files(
+                              info: info,
+                              gameDir: dir,
+                              folder: folder!,
+                              onAdd: _addable[section] == null || (section == _Section.mods && !info.modable)
+                                  ? null
+                                  : () => setState(() => _adding = _addable[section]),
+                            ),
                           },
                         ),
                   const EdgeInsets.fromLTRB(12, 10, 12, 4),
@@ -671,11 +737,14 @@ class _InstanceTextRowState extends State<_InstanceTextRow> {
 // ---------- 资源文件夹 ----------
 
 class _Files extends StatefulWidget {
-  const _Files({required this.info, required this.gameDir, required this.folder});
+  const _Files({required this.info, required this.gameDir, required this.folder, this.onAdd});
 
   final InstanceInfo info;
   final String gameDir;
   final InstanceFolder folder;
+
+  /// 「添加模组 / 资源包 / 光影」：在这个实例里浏览 Modrinth
+  final VoidCallback? onAdd;
 
   @override
   State<_Files> createState() => _FilesState();
@@ -744,6 +813,15 @@ class _FilesState extends State<_Files> {
                     onChanged: (v) => setState(() => _query = v),
                   ),
                 ),
+              if (widget.onAdd != null) ...[
+                const SizedBox(width: 8),
+                FilledButton.tonalIcon(
+                  onPressed: widget.onAdd,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text('添加${widget.folder.label}'),
+                ),
+                const SizedBox(width: 4),
+              ],
               if (isMods && canAddOptiFine(widget.info.loader))
                 TextButton.icon(
                   onPressed: () async {

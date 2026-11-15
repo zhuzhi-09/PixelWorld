@@ -126,10 +126,13 @@ class _HomePageState extends State<HomePage> {
             onManageMods: version == null ? null : () => _openInstance('mods'),
             onLog: () => ShellNav.of(context).open(SubPage.log),
             onFolder: version == null ? null : _openFolder,
-            onInstallMods: () {
-              downloadTabRequest.value = 'mods';
-              ShellNav.of(context).goMain(MainPage.download);
-            },
+            // 装模组：打开当前实例的模组页，直接进入「添加模组」（只显示适配这个实例的模组）
+            onInstallMods: version == null
+                ? () {
+                    downloadTabRequest.value = 'mods';
+                    ShellNav.of(context).goMain(MainPage.download);
+                  }
+                : () => _openInstance('add-mods'),
             onPlayWorld: _playWorld,
             versionName: (id) => _versionName(state, id),
           );
@@ -1256,14 +1259,15 @@ class _WallpaperFold extends StatelessWidget {
                 color: glassCardColor(context, scheme.surfaceContainerHighest),
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
-                  onTap: onVersions,
+                  onTap: () {},
+                  onTapUp: (d) => showInstanceMenu(context, state, onVersions, at: d.globalPosition),
                   borderRadius: BorderRadius.circular(8),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('切换版本', style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                        Text('切换实例', style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
                         Icon(Icons.expand_more, size: 16, color: scheme.onSurfaceVariant),
                       ],
                     ),
@@ -1445,7 +1449,8 @@ class _MinimalFold extends StatelessWidget {
               ],
               // 名字和下面的「切换」一起点，打开实例选择
               InkWell(
-                onTap: onVersions,
+                onTap: () {},
+                onTapUp: (d) => showInstanceMenu(context, state, onVersions, at: d.globalPosition),
                 borderRadius: BorderRadius.circular(8),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 240),
@@ -1730,14 +1735,15 @@ class _DesktopHero extends StatelessWidget {
               color: scheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(8),
               child: InkWell(
-                onTap: onVersions,
+                onTap: () {},
+                onTapUp: (d) => showInstanceMenu(context, state, onVersions, at: d.globalPosition),
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('切换版本', style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                      Text('切换实例', style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
                       Icon(Icons.expand_more, size: 16, color: scheme.onSurfaceVariant),
                     ],
                   ),
@@ -1998,4 +2004,76 @@ class _VersionInfoCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 「切换实例」下拉：列出所有实例用来快速切换（打勾的是当前实例），最下面是「管理全部实例」（打开实例列表）。
+/// 菜单出现在点击的位置 [at]
+Future<void> showInstanceMenu(BuildContext context, AppState state, VoidCallback onManage, {required Offset at}) async {
+  // 不会和实例名重复（实例名不能包含 /）
+  const manage = '//manage';
+  final overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
+  if (overlay == null) return onManage();
+  // 菜单从点击的位置弹出（靠近窗口底部时自动往上）
+  final local = overlay.globalToLocal(at);
+  final position = RelativeRect.fromRect(local & const Size(1, 1), Offset.zero & overlay.size);
+  final theme = Theme.of(context);
+  final scheme = theme.colorScheme;
+  final current = state.selectedVersion?.id;
+  // 名字相同的实例（例如装了两个 1.20.1 Fabric）在副标题里带上文件夹名区分
+  final titles = <String, int>{};
+  for (final v in state.versions) {
+    titles.update(versionTitle(v), (n) => n + 1, ifAbsent: () => 1);
+  }
+  String subtitle(InstanceInfo v) {
+    final t = versionTitle(v);
+    return titles[t]! > 1 && t != v.id ? '${describeVersion(v)} · ${v.id}' : describeVersion(v);
+  }
+
+  final pick = await showMenu<String>(
+    context: context,
+    position: position,
+    constraints: const BoxConstraints(minWidth: 280, maxWidth: 380, maxHeight: 460),
+    items: [
+      // 「管理全部实例」放在最上面，实例很多时不用滚到底
+      const PopupMenuItem(
+        value: manage,
+        child: Row(
+          children: [
+            SizedBox(width: 24, child: Icon(Icons.view_list_outlined, size: 18)),
+            SizedBox(width: 8),
+            Expanded(child: Text('管理全部实例')),
+            Icon(Icons.chevron_right, size: 18),
+          ],
+        ),
+      ),
+      const PopupMenuDivider(),
+      for (final v in state.versions)
+        PopupMenuItem(
+          value: v.id,
+          child: Row(
+            children: [
+              SizedBox(width: 24, child: v.id == current ? Icon(Icons.check, size: 18, color: scheme.primary) : null),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(versionTitle(v), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(
+                      subtitle(v),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+    ],
+  );
+  if (pick == null) return;
+  if (pick == manage) return onManage();
+  if (pick != current) await state.selectVersion(pick);
 }
