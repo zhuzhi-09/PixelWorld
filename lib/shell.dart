@@ -129,7 +129,11 @@ class _ShellState extends State<Shell> {
         if (again != null && again.mounted) startTourOnFirstRun(again);
       });
       // 启动后稍等一会再检查更新，不和首次运行的提示抢
-      Future<void>.delayed(const Duration(seconds: 5), () {
+      Future<void>.delayed(const Duration(seconds: 5), () async {
+        // 第一次打开还没看完新手教程、或者教程正在进行：等它结束再弹更新提示
+        while (tourRunning.value || mounted && !AppScope.read(context).config.tourSeen) {
+          await Future<void>.delayed(const Duration(seconds: 1));
+        }
         final ctx = _navKey.currentContext;
         if (ctx != null && ctx.mounted && AppScope.read(ctx).config.updateAutoCheck) checkUpdates(ctx, manual: false);
       });

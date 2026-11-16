@@ -131,6 +131,9 @@ const _steps = [
 
 OverlayEntry? _entry;
 
+/// 教程正在进行（自动检查更新等弹窗等它结束再出来）
+final tourRunning = ValueNotifier<bool>(false);
+
 /// 开始新手教程（[context] 要在主窗口里面，用来切换页面）
 void startTour(BuildContext context) {
   if (_entry != null) return;
@@ -149,11 +152,13 @@ void startTour(BuildContext context) {
       onClose: () {
         entry.remove();
         _entry = null;
+        tourRunning.value = false;
         config.update({'tourSeen': true});
       },
     ),
   );
   _entry = entry;
+  tourRunning.value = true;
   overlay.insert(entry);
 }
 
