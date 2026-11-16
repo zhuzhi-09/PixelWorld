@@ -144,12 +144,14 @@ def main():
     _save(_resize(tight, 320), 'docs/icon.png')
     _save(_resize(tight, 64), 'docs/favicon.png')
 
-    # 安卓自适应图标：前景是原尺寸构图（立方体在 108dp 的安全区内），背景是白色（colors.xml）
-    _save(_resize(cube, 1024), 'assets/icon/icon_foreground.png')
+    # 安卓自适应图标：108dp 的画布里只有中间直径 66dp 的圆一定可见（桌面会裁成圆形或圆角方形），
+    # 立方体高度缩到约 60dp 放进去；背景是白色（colors.xml）
+    adaptive = _square(cube, bbox, 0.22)
+    _save(_resize(adaptive, 1024), 'assets/icon/icon_foreground.png')
     # 单色主题图标：立方体的剪影，字母镂空
-    mono_a = ImageChops.subtract(cube.getchannel('A'), letters)
     mono = Image.new('RGBA', cube.size, (255, 255, 255, 0))
-    mono.putalpha(mono_a)
+    mono.putalpha(ImageChops.subtract(cube.getchannel('A'), letters))
+    mono = _square(mono, bbox, 0.22)
     # 旧版安卓（8.0 以前）的普通图标：白色圆角方块上放立方体
     legacy = Image.new('RGBA', (1024, 1024), (255, 255, 255, 0))
     plate = Image.new('L', (1024, 1024), 0)
@@ -158,7 +160,7 @@ def main():
     legacy.alpha_composite(_resize(_square(cube, bbox, 0.12), 1024))
     res = 'android/app/src/main/res'
     for name, k in (('mdpi', 1), ('hdpi', 1.5), ('xhdpi', 2), ('xxhdpi', 3), ('xxxhdpi', 4)):
-        _save(_resize(cube, int(108 * k)), f'{res}/mipmap-{name}/ic_launcher_foreground.png')
+        _save(_resize(adaptive, int(108 * k)), f'{res}/mipmap-{name}/ic_launcher_foreground.png')
         _save(_resize(mono, int(108 * k)), f'{res}/mipmap-{name}/ic_launcher_monochrome.png')
         _save(_resize(legacy, int(48 * k)), f'{res}/mipmap-{name}/ic_launcher.png')
 
