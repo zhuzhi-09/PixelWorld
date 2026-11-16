@@ -112,7 +112,8 @@ class _HomePageState extends State<HomePage> {
       builder: (context, snap) {
         final worlds = snap.data ?? const <RecentWorld>[];
         final latest = version == null ? null : worlds.where((w) => w.versionId == version.id).firstOrNull;
-        if (isDesktop) {
+        // 手机上「标准」布局保持原来的首页；「上下」「极简」两种毛玻璃布局和电脑上一样
+        if (isDesktop || state.config.homeLayout != 'standard') {
           return _DesktopHome(
             state: state,
             version: version,
