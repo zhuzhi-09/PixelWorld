@@ -137,7 +137,7 @@ def _save(img, rel):
 
 def main():
     cube, letters, bbox = render()
-    tight = _square(cube, bbox, 0.03)
+    tight = _square(cube, bbox, 0)  # 立方体是六边形，四角本来就空，不再留边
 
     # 启动器内（标题栏、启动页、关于）、Linux 窗口图标、网站
     _save(_resize(tight, 1024), 'assets/icon/icon.png')
