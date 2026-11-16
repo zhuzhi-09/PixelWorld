@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "generatedAt": "2026-11-16T13:05:09Z",
+  "generatedAt": "2026-11-16T16:04:14Z",
   "channels": {
     "stable": {
       "tag": "v0.3.3",
@@ -74,108 +74,102 @@
     },
     "nightly": {
       "tag": "nightly",
-      "name": "Pixel World Nightly (576531e)",
-      "body": "自动构建的测试版，来自 main 分支的 576531efcb6e6f8217bff7d93bd2233274cf64e7，可能不稳定。\n\n## 更新日志\n\n- `ffe37fa` fix: NeoForge 版本列表连不上官方仓库时改用 BMCLAPI；获取失败显示「获取失败，点击重试」而不是「不支持」\n- `d9f66d5` fix: 获取失败的提示改短，手机上不被截断\n- `c0013f4` fix: Legacy Fabric 只在 1.13.2 及以前的版本去问服务器，新版本直接显示不支持\n\n- Windows（x64）：安装包（`*-windows-x64-setup.exe`）或便携版（`*-windows-x64-portable.zip`）\n- Windows（ARM64，测试版）：`*-windows-arm64-setup.exe` 或 `*-windows-arm64-portable.zip`，骁龙等 ARM 处理器的 Windows 电脑原生运行\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n- Linux（测试版）：需要 Ubuntu 24.04 及以上（glibc 2.39+）。x86_64 电脑选 `amd64` / `x86_64` / `x64`，ARM64 电脑选 `arm64` / `aarch64`\n  - `*.deb`：Debian/Ubuntu 安装包\n  - `*.rpm`：Fedora/openSUSE/RHEL 安装包\n  - `*.pkg.tar.zst`：Arch / CachyOS / Manjaro 安装包，`sudo pacman -U 文件名`\n  - `*.AppImage`：下载后 `chmod +x` 直接运行\n  - `*.tar.gz`：解压后运行 `PixelWorld/pcl_pw`\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "name": "Pixel World Nightly (b401834)",
+      "body": "自动构建的测试版，来自 main 分支的 b40183402bab12948810543e1e8b47d8446e5cde，可能不稳定。\n\n## 更新日志\n\n- `06c530a` docs: README 开头加英文简介\n\n- Windows（x64）：安装包（`*-windows-x64-setup.exe`）或便携版（`*-windows-x64-portable.zip`）\n- Windows（ARM64，测试版）：`*-windows-arm64-setup.exe` 或 `*-windows-arm64-portable.zip`，骁龙等 ARM 处理器的 Windows 电脑原生运行\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- Linux（测试版）：需要 Ubuntu 24.04 及以上（glibc 2.39+）。x86_64 电脑选 `amd64` / `x86_64` / `x64`，ARM64 电脑选 `arm64` / `aarch64`\n  - `*.deb`：Debian/Ubuntu 安装包\n  - `*.rpm`：Fedora/openSUSE/RHEL 安装包\n  - `*.pkg.tar.zst`：Arch / CachyOS / Manjaro 安装包，`sudo pacman -U 文件名`\n  - `*.AppImage`：下载后 `chmod +x` 直接运行\n  - `*.tar.gz`：解压后运行 `PixelWorld/pcl_pw`\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": true,
-      "commit": "576531efcb6e6f8217bff7d93bd2233274cf64e7",
-      "publishedAt": "2026-11-16T13:05:08Z",
+      "commit": "b40183402bab12948810543e1e8b47d8446e5cde",
+      "publishedAt": "2026-11-16T16:04:13Z",
       "page": "https://github.com/zhuzhi-09/PixelWorld/releases/tag/nightly",
       "assets": [
         {
-          "name": "PixelWorld-nightly-576531e-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-android-arm64.apk",
-          "size": 50178639,
-          "sha256": "59c5967e21d101f4ce3ecb43ad238ed05100685f2ec9b06e9ed92bed0b2b9abc"
+          "name": "PixelWorld-nightly-b401834-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-android-arm64.apk",
+          "size": 50178735,
+          "sha256": "8be9087fa6854fb41e7b35488640d02392377037dd39b1e10aa7b55448639685"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-aarch64.AppImage",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-aarch64.AppImage",
+          "name": "PixelWorld-nightly-b401834-linux-aarch64.AppImage",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-aarch64.AppImage",
           "size": 13126152,
-          "sha256": "adc33267d9687400b5d7896c71a9885eddf793e9f7ce00a01826474c4a5c943e"
+          "sha256": "4cb9eb19abb833103d25b290c32189f434e9d97a44feff2a7a5cf522a5b6143b"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-aarch64.pkg.tar.zst",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-aarch64.pkg.tar.zst",
-          "size": 13799066,
-          "sha256": "0c646ef54a8ba20a08b7d46f8b52f6e7c43b971439db66bff1e1802f6047837b"
+          "name": "PixelWorld-nightly-b401834-linux-aarch64.pkg.tar.zst",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-aarch64.pkg.tar.zst",
+          "size": 13799156,
+          "sha256": "3ca29ff7ef354a80d31a2a06ab446c73977171f7da826db74603d7f5073a4498"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-aarch64.rpm",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-aarch64.rpm",
-          "size": 13876180,
-          "sha256": "5a426a24db1dd9296e6ae96dd17a415b930c84c1407d7d8cbf591c156a2ef3c1"
+          "name": "PixelWorld-nightly-b401834-linux-aarch64.rpm",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-aarch64.rpm",
+          "size": 13876261,
+          "sha256": "b693bf7e354e6f9c7b1033b3e769b7127f56d0d395c822592e4250870026c7d2"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-amd64.deb",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-amd64.deb",
-          "size": 11787848,
-          "sha256": "75d052e9b56a7cdfc4ef1aa9133be2236a97574517170580cac578f1a8476c17"
+          "name": "PixelWorld-nightly-b401834-linux-amd64.deb",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-amd64.deb",
+          "size": 11785788,
+          "sha256": "e17f9789c0694d5919f69ff3f2b0ae592639197b3535c3a50c085f84570ceba6"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-arm64.deb",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-arm64.deb",
-          "size": 11414236,
-          "sha256": "907b18b60a0ad451d3e99e1335ae355b1bccca8c785a5d3e8b67fe843bbd6ecd"
+          "name": "PixelWorld-nightly-b401834-linux-arm64.deb",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-arm64.deb",
+          "size": 11413714,
+          "sha256": "f3ee9c7f6843e5e5f97ca7dfbb290fde7a1f824807e9cd4859465c7b48c3edb0"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-arm64.tar.gz",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-arm64.tar.gz",
-          "size": 13384261,
-          "sha256": "a36dd388524e4f900ee4bfd4b9e833e4f7e1dc433c2cf69a50030cf1a7eb4bef"
+          "name": "PixelWorld-nightly-b401834-linux-arm64.tar.gz",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-arm64.tar.gz",
+          "size": 13385235,
+          "sha256": "5801e494e2adb18d4a39e405f3b023d65c145fa840a4437f8b8cef5436608345"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-x64.tar.gz",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-x64.tar.gz",
-          "size": 13832649,
-          "sha256": "25f3f9a7150ae970a6639324258211fedee3f2d109ff78facfe32ef677d4c13d"
+          "name": "PixelWorld-nightly-b401834-linux-x64.tar.gz",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-x64.tar.gz",
+          "size": 13835883,
+          "sha256": "15947cf99d9775f66e61c0ef13981d347ba33a30a3c3fd96b382cb0ce6707706"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-x86_64.AppImage",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-x86_64.AppImage",
+          "name": "PixelWorld-nightly-b401834-linux-x86_64.AppImage",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-x86_64.AppImage",
           "size": 13588984,
-          "sha256": "1142dae18d0865e6541f7d13b32e170de82bbe392c7fa942b37e2309fd6c56c4"
+          "sha256": "c0b61be97e1393ea71d24d9474b5ec495122129f6e69bc19b0888618cb230197"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-x86_64.pkg.tar.zst",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-x86_64.pkg.tar.zst",
-          "size": 14205651,
-          "sha256": "adfa28de95ae97289e9525cc7793106c204a7fed5be47f6da0e804e7eed3427f"
+          "name": "PixelWorld-nightly-b401834-linux-x86_64.pkg.tar.zst",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-x86_64.pkg.tar.zst",
+          "size": 14204320,
+          "sha256": "72f25c31b20376e48977aaea82f665c7ea7b7ae79d0f6b4fa60936edd15b6dd0"
         },
         {
-          "name": "PixelWorld-nightly-576531e-linux-x86_64.rpm",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-linux-x86_64.rpm",
-          "size": 14284966,
-          "sha256": "c5f08108562fdfee552c0975348f4ba0aa826bc1eb30aa510d2a4158fd3a2985"
+          "name": "PixelWorld-nightly-b401834-linux-x86_64.rpm",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-linux-x86_64.rpm",
+          "size": 14285010,
+          "sha256": "09ba12c8e88499127104fcbd3769f101ce35dee06ad71f0510183a429919da98"
         },
         {
-          "name": "PixelWorld-nightly-576531e-macos.dmg",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-macos.dmg",
-          "size": 29208142,
-          "sha256": "ea65dbba80b3079374bf535bf251eadb31c4f9180dff6f69f8c61022d5b7d926"
+          "name": "PixelWorld-nightly-b401834-windows-arm64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-windows-arm64-portable.zip",
+          "size": 15591533,
+          "sha256": "c04dfd89a03d8d6f3bc84bee4558d66e90d07a9ec9a193a009ae35ba10615edd"
         },
         {
-          "name": "PixelWorld-nightly-576531e-windows-arm64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-windows-arm64-portable.zip",
-          "size": 15591513,
-          "sha256": "2298afb62bd7378c1f8c2ca612322e625089a2c73ec7b490d2d76611d11fb72d"
-        },
-        {
-          "name": "PixelWorld-nightly-576531e-windows-arm64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-windows-arm64-setup.exe",
+          "name": "PixelWorld-nightly-b401834-windows-arm64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-windows-arm64-setup.exe",
           "size": 15709696,
-          "sha256": "22d7d1eed6280fc5d29a6509ed9c29782464d80de2faa7f6795e7fdf96037682"
+          "sha256": "32b8518018ef42a0ccb858b0ec3cd249301ad816dc9d9851bc193350cb50c583"
         },
         {
-          "name": "PixelWorld-nightly-576531e-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-windows-x64-portable.zip",
-          "size": 16595447,
-          "sha256": "213e5aa0ea7c3f8d3425807d9591670e6029146593ba3e15def6a994aaa7417e"
+          "name": "PixelWorld-nightly-b401834-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-windows-x64-portable.zip",
+          "size": 16595375,
+          "sha256": "a15bbdd1d6c1d48320d54008617a335adafdbaf3f14d8a614275e3ffa034c6bc"
         },
         {
-          "name": "PixelWorld-nightly-576531e-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-576531e-windows-x64-setup.exe",
+          "name": "PixelWorld-nightly-b401834-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PixelWorld-nightly-b401834-windows-x64-setup.exe",
           "size": 16713728,
-          "sha256": "1698081edaa4e376ef83e4d8e1bcde3073a1b0bbb8f6e59c6b5cedd18fef8dc6"
+          "sha256": "774600e17c8cddb59a9aa216833a6b95d88c54770f0f36b96c36422c38af8155"
         }
       ]
     }
