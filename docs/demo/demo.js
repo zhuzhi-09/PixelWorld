@@ -75,7 +75,7 @@
       page: 'home', sub: null, inst: 0, detail: 0, detailTab: 'overview',
       dlTab: 'versions', filt: 'release', vq: '', dlSel: null, ld: null, ldv: 0, of: false, iname: '',
       resQ: '', setSec: 'launch', toolSec: 'transfer', running: false,
-      theme: 'system', seed: 'green', layout: 'min', bg: true, sw: {}, sel: {}, txt: {},
+      theme: 'system', seed: 'green', layout: 'min', bg: true, fit: 'fit', sw: {}, sel: {}, txt: {},
       accounts: [{ n: 'Steve', t: '正版' }, { n: 'Alex', t: '离线' }], acc: 0,
       tasks: [], ai: [], instQ: '', menu: null
     };
@@ -530,7 +530,8 @@
             }).join('') + '</div></div>'),
           row(null, '界面缩放', '自动：按屏幕尺寸计算，当前为 100%', dd('scale', [['auto', '自动'], ['90', '90%'], ['100', '100%'], ['110', '110%'], ['125', '125%']], 'auto'))
         ]) + grp('背景', [row(null, '背景图片', !S.bg ? '选择一张图片作为启动器的背景，界面面板会变成毛玻璃' : S.layout === 'std' ? '「标准」首页不显示背景图片，把首页布局换成「上下」或「极简」后生效' : '显示在整个窗口后面，界面面板会变成毛玻璃',
-            S.bg ? btn('tonal', '换一张…', null, 'tip', '选择背景图片') + btn('txt', '移除', null, 'bgoff') : btn('tonal', '使用演示壁纸', null, 'bgon'))]) +
+            S.bg ? btn('tonal', '换一张…', null, 'tip', '选择背景图片') + btn('txt', '移除', null, 'bgoff') : btn('tonal', '使用演示壁纸', null, 'bgon'))].concat(S.bg ? [
+            row(null, '契合度', { fill: '填充：铺满整个窗口，多出来的部分裁掉', fit: '适应：完整显示整张图片，空出来的地方用图片的颜色填上', stretch: '拉伸：拉伸到窗口大小，图片可能变形', tile: '平铺：按图片原来的大小重复铺满窗口', center: '居中：按图片原来的大小放在窗口中间' }[S.fit], dd('bgfit', [['fill', '填充'], ['fit', '适应'], ['stretch', '拉伸'], ['tile', '平铺'], ['center', '居中']], S.fit))] : [])) +
           grp('首页', [
             row(null, '首页布局', { std: '标准：大卡片、公告与快捷按钮、最近游玩', split: '上下：当前实例在顶部，开始游戏和存档在底部，中间留给背景；选背景图片时自动切到这个布局', min: '极简：只在底部留一条，放当前实例和开始游戏' }[S.layout], dd('layout', [['std', '标准'], ['split', '上下'], ['min', '极简']], S.layout)),
             row(null, '显示使用提示', '正在使用的版本与免费声明', sw('hints', true)),
@@ -692,6 +693,7 @@
       var dark = S.theme === 'dark' || (S.theme === 'system' && mq && mq.matches);
       root.classList.toggle('dark', !!dark);
       root.classList.toggle('glass', glassOn());
+      root.setAttribute('data-fit', S.fit);
       if (S.seed === 'green') root.removeAttribute('data-seed'); else root.setAttribute('data-seed', S.seed);
     }
     if (mq) { var onMq = function () { applyTheme(); }; if (mq.addEventListener) mq.addEventListener('change', onMq); else if (mq.addListener) mq.addListener(onMq); }
@@ -930,6 +932,7 @@
       if (!k) return;
       S.sel[k] = t.value;
       if (k === 'theme') { S.theme = t.value; applyTheme(); }
+      if (k === 'bgfit') { S.fit = t.value; applyTheme(); render(false); }
       if (k === 'ldv') { var ipn = app.querySelector('#pd-ip'); if (ipn) ipn.innerHTML = installPanel(selVersion()); }
       if (k === 'layout') { S.layout = t.value; applyTheme(); render(false); }
     });
