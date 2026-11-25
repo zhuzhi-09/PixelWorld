@@ -335,7 +335,12 @@
   --g1: rgb(245 243 248 / .62); --g2: rgb(251 248 254 / .5); --g3: rgb(233 231 237 / .62); --gb: blur(5px) saturate(1.2); }
 .pd.glass.dark { --p:#b6c4ff;--op:#1b2c64;--pc:#7e8ecc;--opc:#000a31;--sc:#424860;--osc:#b2b7d3;--s:#131317;--os:#e4e1e7;--osv:#c5c5d1;--c0:#0d0e12;--c1:#1b1b1f;--c2:#1f1f23;--c3:#292a2e;--c4:#343439;--ol:#8f909b;--olv:#454650;--pf:#dce1ff;--opf:#01164f;
   --g1: rgb(27 27 31 / .62); --g2: rgb(19 19 23 / .45); --g3: rgb(41 42 46 / .62); }
-.pd.glass { background: #1a1b26 url("wallpaper.jpg") center / cover no-repeat; }
+.pd.glass { background: #403a40 url("wallpaper.jpg") center / cover no-repeat; }
+/* 契合度：适应时空出来的地方用图片平均色压暗 45%，和启动器一致 */
+.pd.glass[data-fit="fit"] { background-size: contain; }
+.pd.glass[data-fit="stretch"] { background-size: 100% 100%; }
+.pd.glass[data-fit="tile"] { background-size: auto; background-repeat: repeat; background-position: 0 0; }
+.pd.glass[data-fit="center"] { background-size: auto; }
 .pd.glass .rail, .pd.glass .chipb, .pd.glass .hcard, .pd.glass .anno, .pd.glass .qb, .pd.glass .wt, .pd.glass .panel, .pd.glass .vlist,
 .pd.glass .col > .r, .pd.glass .res, .pd.glass .card, .pd.glass .hint, .pd.glass .news, .pd.glass .aib, .pd.glass .irow, .pd.glass .snav,
 .pd.glass .tabs, .pd.glass .ai .sess, .pd.glass .strip, .pd.glass .mbar, .pd.glass .search input, .pd.glass .seg {
