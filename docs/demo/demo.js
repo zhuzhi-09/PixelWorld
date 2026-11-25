@@ -264,7 +264,7 @@
         case 'forge': return n >= 105;
         case 'neoforge': return n >= 2001;
         case 'cleanroom': return n === 1202;
-        case 'labymod': return n >= 1800 && n < 3000;
+        case 'labymod': return n >= 1800;
         case 'fabric': case 'quilt': return n >= 1400;
         case 'legacyfabric': return n >= 300 && n <= 1302;
         case 'liteloader': return n >= 500 && n <= 1202;
@@ -287,31 +287,98 @@
       for (var i = 0; i < list.length; i++) if (list[i][0] === S.dlSel) return S.dlSel;
       return list[0] ? list[0][0] : null;
     }
+    /* 加载器图标：启动器自绘的线条图标（lib/widgets/loader_icon.dart） */
+    var CLOTH = '<path d="M4.5 10.5 12 4a2 2 0 0 1 2.8.2l5 5.6a2 2 0 0 1-.2 2.9L12 19.5a2 2 0 0 1-2.8-.2l-4.9-5.8a2 2 0 0 1 .2-3Z"/>';
+    var LSVG = {
+      '': '<path d="M12 2.8 20.5 7.5v9L12 21.2l-8.5-4.7v-9L12 2.8Z"/><path d="M3.5 7.5 12 12.2l8.5-4.7M12 12.2v9"/><path d="m3.5 10.6 2.8 1.5 2.4-.4 3.3 1.9 3.3-1.9 2.4.4 2.8-1.5"/>',
+      forge: '<path d="M2.5 8H9V6h12.5v3c-3.2.7-5.5 2.2-5.5 4.6 0 1.2.8 2 2 2.4v3H6v-3c1.8-.4 3.2-1.6 3.2-3.4 0-1.9-4.5-1.2-6.7-4.6Z"/>',
+      neoforge: '<path d="m4 3 1.4 7.6L3 13l9 8 9-8-2.4-2.4L20 3l-5 4.2H9L4 3Z"/><path d="M8.8 12.2v1.3M15.2 12.2v1.3M12 17v.01"/>',
+      cleanroom: '<path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4l8-4.6Z"/><path d="M15 9.6a4 4 0 1 0 0 4.8"/>',
+      fabric: CLOTH + '<path d="m9 10 5.5 6M12.5 7l5.5 6"/>',
+      legacyfabric: CLOTH + '<path d="M10 9v5.5h4.5"/>',
+      quilt: '<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><path d="m17 12.6 4.4 4.4-4.4 4.4-4.4-4.4 4.4-4.4Z"/>',
+      optifine: '<rect x="3" y="6" width="7.5" height="12" rx="3"/><path d="M14.5 18V6H21M14.5 12H19"/>',
+      labymod: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M10 8.5V15.5H15"/>',
+      liteloader: '<path d="M20 4c-6.5 0-11.5 3-13 8.5L6.5 17l4.5-.5C17 15 20 10.5 20 4Z"/><path d="m4 20 10-10"/>'
+    };
+    function lsvg(k, size) {
+      return '<svg class="lic" viewBox="0 0 24 24" width="' + (size || 20) + '" height="' + (size || 20) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + LSVG[k || ''] + '</svg>';
+    }
+    /* 顺序同启动器的安装面板：原版在前，其余按 LoaderKind 的顺序 */
+    var INSTALL_ORDER = [null, 'forge', 'neoforge', 'fabric', 'quilt', 'legacyfabric', 'liteloader', 'cleanroom', 'labymod'];
+    var FORGE = { '1.21.11': '61.0.2', '1.21.10': '60.0.15', '1.21.8': '58.1.0', '1.21.5': '55.0.24', '1.21.4': '54.1.0', '1.21.3': '53.1.0', '1.21.1': '52.1.0', '1.20.6': '50.1.0', '1.20.4': '49.1.0', '1.20.1': '47.4.0', '1.19.4': '45.3.0', '1.19.2': '43.5.0', '1.18.2': '40.3.0', '1.16.5': '36.2.42', '1.12.2': '14.23.5.2860', '1.8.9': '11.15.1.2318', '1.7.10': '10.13.4.1614' };
+    function loaderVersions(ld, id) {
+      var n = mcNum(id), v;
+      switch (ld) {
+        case 'forge': v = FORGE[id] || (n >= 3000 ? (60 + (n % 10) * 2) + '.1.8' : (Math.max(10, Math.round(n / 25) + 1)) + '.0.3'); return [v, '47.3.0'].filter(function (x, i, a) { return a.indexOf(x) === i; });
+        case 'neoforge': return n >= 3000 ? [id + '.0.103', id + '.0.88-beta'] : n === 2001 ? ['47.1.106'] : [(Math.floor(n / 100) - 0) + '.' + (n % 100) + '.172', (Math.floor(n / 100)) + '.' + (n % 100) + '.90'];
+        case 'fabric': return ['0.20.1', '0.17.3', '0.16.14'];
+        case 'quilt': return ['0.24.0', '0.29.1-beta.3'];
+        case 'legacyfabric': return ['0.17.3', '0.16.0'];
+        case 'liteloader': return [id + '-SNAPSHOT'];
+        case 'cleanroom': return ['0.3.31-alpha'];
+        case 'labymod': return ['4.50.3（正式版）', '4.51.0（测试版）'];
+      }
+      return ['1.0'];
+    }
+    function defaultName(ld, id, lv) {
+      switch (ld) {
+        case null: return id;
+        case 'liteloader': return id + '-LiteLoader';
+        case 'quilt': return 'quilt-loader-' + lv + '-' + id;
+        case 'fabric': return 'fabric-loader-' + lv + '-' + id;
+        case 'legacyfabric': return 'fabric-loader-' + lv + '-' + id;
+        case 'forge': return id + '-forge-' + lv;
+        case 'neoforge': return 'neoforge-' + lv;
+        case 'cleanroom': return id + '-cleanroom-' + lv;
+        case 'labymod': return id + '-LabyMod-4.' + lv.replace(/（.*$/, '');
+      }
+      return id;
+    }
+    /* 和启动器一样，各加载器的版本列表分别获取，先返回的先显示 */
+    var LOAD = { id: null, done: 0 }, loadTimer;
+    function startLoading(id) {
+      if (LOAD.id === id) return;
+      LOAD = { id: id, done: 0 };
+      clearInterval(loadTimer);
+      loadTimer = setInterval(function () {
+        LOAD.done++;
+        if (LOAD.done >= INSTALL_ORDER.length - 1) clearInterval(loadTimer);
+        var ip = app.querySelector('#pd-ip');
+        if (ip && S.page === 'download' && S.dlTab === 'versions' && !S.sub) ip.innerHTML = installPanel(selVersion());
+      }, 130 + Math.random() * 90);
+    }
+    function ldLoading(k, id) { return k && LOAD.id === id && INSTALL_ORDER.indexOf(k) > LOAD.done; }
     function installPanel(id) {
       if (!id) return empty('touch_app', '选择左边的版本');
+      startLoading(id);
       var date = ''; DL[S.filt].forEach(function (x) { if (x[0] === id) date = x[1]; });
-      var ld = S.ld && loaderOk(S.ld, id) ? S.ld : null;
-      var name = ld ? id + '-' + LOADERS[ld].n.replace(' ', '') : id;
+      var ld = S.ld && loaderOk(S.ld, id) && !ldLoading(S.ld, id) ? S.ld : null;
+      var lvs = ld ? loaderVersions(ld, id) : null;
+      var lv = ld ? (S.sel.ldv && lvs.indexOf(S.sel.ldv) >= 0 ? S.sel.ldv : lvs[0]) : '';
+      var ofOk = (!ld || ld === 'forge') && mcNum(id) <= 2101 && mcNum(id) >= 700;
+      var name = S.of && ofOk && !ld ? id + '-OptiFine_HD_U_J1' : defaultName(ld, id, lv);
       var same = INST.filter(function (v) { return v.mc === id; }).length;
-      var tiles = LOADER_ORDER.map(function (k) {
-        var ok = loaderOk(k, id), on = (k || null) === ld;
-        var L = k ? LOADERS[k] : null;
-        var icon = k ? '<span class="li" style="background:' + L.c + ';color:' + L.fg + '">' + L.a + '</span>' : '<span class="li" style="background:linear-gradient(180deg,#6fae3c 0 34%,#8b5a2b 34%)"></span>';
-        return '<button type="button" class="ltile hv' + (on ? ' on' : '') + '"' + act('ld', k || '') + (ok ? '' : ' disabled title="不支持 ' + esc(id) + '"') + '>' + icon + '<span style="min-width:0"><b>' + (k ? L.n : '原版') + '</b><span class="h">' + (ok ? LOADER_HINT[k || ''] : '不支持 ' + esc(id)) + '</span></span></button>';
+      var total = INSTALL_ORDER.length - 1, got = Math.min(total, LOAD.id === id ? LOAD.done : total);
+      var tiles = INSTALL_ORDER.map(function (k) {
+        var loading = ldLoading(k, id), ok = loaderOk(k, id), on = (k || null) === ld;
+        var hint = loading ? '正在获取…' : !ok ? '不支持 ' + id : !k ? '不加装' : loaderVersions(k, id)[0];
+        return '<button type="button" class="lt2 hv' + (on ? ' on' : '') + (!ok && !loading ? ' off' : '') + '"' + act('ld', k || '') + (ok && !loading ? '' : ' disabled') + '>' + lsvg(k) +
+          '<span class="tx"><b>' + (k ? LOADERS[k].n : '原版') + '</b><span>' + esc(hint) + '</span></span>' + (loading ? '<span class="spin"></span>' : '') + '</button>';
       }).join('');
-      var ver = ld ? '<div class="fld" style="margin-top:12px"><label>' + LOADERS[ld].n + ' 版本</label>' + dd('ldv', loaderVersions(ld, id), loaderVersions(ld, id)[0][0]).replace('<select', '<select style="width:100%"').replace('class="dd"', 'class="dd" style="display:block"') + '</div>' : '';
-      var ofOk = (!ld || ld === 'forge') && mcNum(id) !== 99999 && mcNum(id) <= 2101 && mcNum(id) >= 700;
-      var of = '<button type="button" class="ofrow hv' + (S.of && ofOk ? ' on' : '') + '"' + act('of') + (ofOk ? '' : ' disabled') + '>' + '<span class="li" style="width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:' + LOADERS.optifine.c + ';color:#fff;font-weight:800;font-size:12px">O</span>' +
-        '<span><b style="display:block;font-size:13.5px;font-weight:500">同时安装 OptiFine</b><span style="display:block;font-size:12px;color:var(--osv)">' + (!ofOk ? (ld ? LOADERS[ld].n + ' 不支持与 OptiFine 一起安装' : '该版本没有 OptiFine') : 'OptiFine HD U J1（演示）') + '</span></span><span class="cb">' + (S.of && ofOk ? ic('check') : '') + '</span></button>';
-      return '<div class="scr" data-s="inst" style="bottom:61px"><div class="inst"><h4>安装 ' + esc(id) + '<small>' + esc(date) + '</small></h4>' +
-        '<div class="fld" style="margin-top:14px"><label>实例名称</label><input class="tf" data-t="iname" style="width:100%;height:42px" placeholder="' + esc(name) + '" value="' + esc(S.txt.iname || '') + '" autocomplete="off" spellcheck="false"></div>' +
-        (same ? '<div style="font-size:11.5px;color:var(--osv);margin-top:6px">已经有 ' + same + ' 个 ' + esc(id) + ' 的实例；这次会再装一个独立的实例。</div>' : '') +
-        '<div class="ltiles">' + tiles + '</div>' + ver + of + '</div></div>' +
-        '<div class="instbar"><span class="x">安装为 ' + esc((S.txt.iname || '').trim() || name) + '</span>' + btn('fill', '安装', 'download', 'install', id) + '</div>';
-    }
-    function loaderVersions(ld, id) {
-      var base = { fabric: ['0.16.9', '0.16.7', '0.15.11'], quilt: ['0.27.1', '0.26.4'], forge: ['47.3.0', '47.2.0'], neoforge: ['21.1.172', '21.1.80'], cleanroom: ['0.2.4-alpha'], labymod: ['4.2.36'], legacyfabric: ['0.16.9'], liteloader: ['1.12.2-SNAPSHOT'] }[ld] || ['1.0'];
-      return base.map(function (x, i) { return [x, x + (i === 0 ? '（推荐）' : '')]; });
+      var ver = ld ? '<div class="fld" style="margin-top:10px"><label>' + LOADERS[ld].n + ' 版本</label><span class="dd" style="display:block"><select data-sel="ldv" style="width:100%">' +
+        lvs.map(function (x) { return '<option' + (x === lv ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>' + ic('arrow_drop_down') + '</span></div>' : '';
+      var ofLoading = LOAD.id === id && got < total;
+      var ofSub = ofLoading ? '正在获取 OptiFine 版本…' : ld && !ofOk ? LOADERS[ld].n + ' 不支持与 OptiFine 一起安装' : !ofOk ? '该版本没有 OptiFine' : 'OptiFine HD U J1（演示）';
+      var of = '<button type="button" class="of2 hv' + (S.of && ofOk ? ' on' : '') + (ofOk && !ofLoading ? '' : ' off') + '"' + act('of') + (ofOk && !ofLoading ? '' : ' disabled') + '>' + lsvg('optifine', 22) +
+        '<span class="tx"><b>同时安装 OptiFine</b><span>' + esc(ofSub) + '</span></span><span class="cb">' + (S.of && ofOk ? ic('check') : '') + '</span></button>';
+      return '<div class="scr" data-s="inst" style="bottom:68px"><div class="inst">' +
+        '<h4>安装 ' + esc(id) + '<small>' + esc(date) + '</small>' + (got < total ? '<small style="margin-left:auto">正在获取加载器 ' + got + '/' + total + '</small>' : '') + '</h4>' +
+        (got < total ? '<div class="lbar"><i style="width:' + Math.round(got / total * 100) + '%"></i></div>' : '') +
+        '<div class="fld" style="margin-top:12px"><label>实例名称</label><input class="tf" data-t="iname" style="width:100%;height:42px;border-radius:10px" placeholder="' + esc(name) + '" value="' + esc(S.txt.iname || '') + '" autocomplete="off" spellcheck="false"></div>' +
+        (same ? '<div class="note2">已经有 ' + same + ' 个 ' + esc(id) + ' 的实例；这次会再装一个独立的实例，存档和模组互不影响</div>' : '') +
+        '<div class="lgrid">' + tiles + '</div>' + ver + of + '</div></div>' +
+        '<div class="instbar"><span class="x">安装为 ' + esc((S.txt.iname || '').trim() || name) + '</span><button type="button" class="b fill ibtn2 hv"' + act('install', id) + (got < total && S.ld && ldLoading(S.ld, id) ? ' disabled' : '') + '>安装</button></div>';
     }
     function resList(tab) {
       var data = RESLIVE[tab] || RES[tab].map(function (x) { return { title: x[0], description: x[1], downloads: x[2] * 1e4 }; });
@@ -332,7 +399,7 @@
         return '<button type="button" class="' + (S.filt === f[0] ? 'on' : '') + '"' + act('filt', f[0]) + '>' + f[1] + '</button>';
       }).join('') + '</div>' : '') + '</div>';
       if (S.dlTab === 'versions') {
-        return tabs + '<div class="col"><div class="l"><div class="search">' + ic('search') + '<input id="pd-vq" type="text" placeholder="搜索版本号" value="' + esc(S.vq) + '" autocomplete="off" spellcheck="false"></div>' +
+        return tabs + '<div class="col"><div class="l"><div class="search box">' + ic('search') + '<input id="pd-vq" type="text" placeholder="搜索版本号" value="' + esc(S.vq) + '" autocomplete="off" spellcheck="false"></div>' +
           '<div class="vlist"><div class="scr" data-s="vl" id="pd-vl">' + dlRows() + '</div></div></div><div class="r" id="pd-ip">' + installPanel(selVersion()) + '</div></div>';
       }
       if (S.dlTab === 'favorites') return tabs + '<div class="col"><div class="r">' + empty('star', '还没有收藏', '在资源详情里点「收藏」，常用的模组会出现在这里') + '</div></div>';
@@ -792,16 +859,17 @@
         case 'dltab': S.dlTab = v; S.resQ = ''; render(false); if (v !== 'versions' && v !== 'favorites') loadRes(v); break;
         case 'filt': S.filt = v; S.dlSel = null; S.ld = null; S.of = false; render(false); break;
         case 'dlsel': S.dlSel = v; S.ld = null; S.of = false; S.txt.iname = ''; render(false); break;
-        case 'ld': S.ld = v || null; if (S.ld && S.ld !== 'forge') S.of = false; render(false); break;
+        case 'ld': S.ld = v || null; delete S.sel.ldv; if (S.ld && S.ld !== 'forge') S.of = false; render(false); break;
         case 'of': S.of = !S.of; render(false); break;
         case 'install':
           (function (id) {
             var ld = S.ld && loaderOk(S.ld, id) ? S.ld : null;
-            var name = (S.txt.iname || '').trim() || (ld ? id + '-' + LOADERS[ld].n.replace(' ', '') : id);
+            var lv = ld ? (S.sel.ldv && loaderVersions(ld, id).indexOf(S.sel.ldv) >= 0 ? S.sel.ldv : loaderVersions(ld, id)[0]) : '';
+            var name = (S.txt.iname || '').trim() || defaultName(ld, id, lv);
             S.txt.iname = '';
             say('已开始安装，进度见顶栏的后台任务');
             runTask('安装 ' + name, ['下载版本清单', '下载客户端', '下载依赖库', '下载资源文件', ld ? '安装 ' + LOADERS[ld].n : '校验文件'], function () {
-              INST.push({ id: name, mc: id, ld: ld || (S.of ? 'optifine' : null), lv: ld ? LOADERS[ld].n.toLowerCase() + '-' + loaderVersions(ld, id)[0][0] : null, mods: 0, ago: '还没玩过' });
+              INST.push({ id: name, mc: id, ld: ld || (S.of ? 'optifine' : null), lv: ld ? defaultName(ld, id, lv) : null, mods: 0, ago: '还没玩过' });
             });
           })(v);
           break;
@@ -860,6 +928,7 @@
       if (!k) return;
       S.sel[k] = t.value;
       if (k === 'theme') { S.theme = t.value; applyTheme(); }
+      if (k === 'ldv') { var ipn = app.querySelector('#pd-ip'); if (ipn) ipn.innerHTML = installPanel(selVersion()); }
       if (k === 'layout') { S.layout = t.value; applyTheme(); render(false); }
     });
     root.addEventListener('input', function (e) {
