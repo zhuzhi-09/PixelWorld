@@ -133,8 +133,8 @@
     }
 
     /* ---------- 侧栏与顶栏 ---------- */
-    var NAV = [['home', '启动', 'rocket_launch'], ['download', '下载', 'download'], ['tools', '工具', 'construction'], ['accounts', '账户', 'person'], ['settings', '设置', 'settings'], ['ai', 'AI', 'chat_bubble']];
-    var TITLES = { download: '下载', tools: '工具', accounts: '账户', settings: '设置', ai: 'AI 助手' };
+    var NAV = [['home', '启动', 'rocket_launch'], ['download', '下载', 'download'], ['tools', '工具', 'construction'], ['settings', '设置', 'settings'], ['ai', 'AI', 'chat_bubble']];
+    var TITLES = { download: '下载', tools: '工具', settings: '设置', ai: 'AI 助手' };
     var SUBT = { versions: '实例', log: '游戏日志', instance: '实例详情', tasks: '任务' };
     function rail() {
       return '<nav class="rail" aria-label="主导航"><img class="logo" src="icon.png" alt="">' + NAV.map(function (n) {
@@ -166,7 +166,7 @@
       return h + taskPill() +
         '<button type="button" class="ib hv"' + act('sub', 'versions') + ' aria-label="搜索实例" title="搜索实例">' + ic('search') + '</button>' +
         '<button type="button" class="ib hv"' + act('tip', '查看公告') + ' aria-label="公告" title="公告">' + ic('notifications') + '</button>' +
-        '<button type="button" class="chipb acc hv"' + act('nav', 'accounts') + ' title="' + esc(a.n + ' · ' + a.t) + '"><span class="ava">' + esc(a.n.charAt(0).toUpperCase()) + '</span>' + esc(a.n + ' · ' + a.t) + '</button>' +
+        '<button type="button" class="chipb acc hv"' + act('goset', 'accounts') + ' title="' + esc(a.n + ' · ' + a.t) + '"><span class="ava">' + esc(a.n.charAt(0).toUpperCase()) + '</span>' + esc(a.n + ' · ' + a.t) + '</button>' +
         '<div class="wbtns"><button type="button" class="wbtn hv"' + act('tip', '最小化窗口') + ' aria-label="最小化">' + ic('remove') + '</button><button type="button" class="wbtn hv"' + act('tip', '最大化窗口') + ' aria-label="最大化">' + ic('crop_square') + '</button><button type="button" class="wbtn x"' + act('tip', '关闭窗口') + ' aria-label="关闭">' + ic('close') + '</button></div></div>';
     }
 
@@ -472,12 +472,12 @@
         '<button type="button" class="b tonal hv"' + act('addoff') + (verified ? '' : ' disabled') + '>添加</button></div>' +
         '<div class="sect">第三方账户</div><button type="button" class="b tonal hv"' + act('tip', '外置登录') + (verified ? '' : ' disabled') + '>' + ic('dns') + '外置登录</button>' +
         '<div class="sub" style="margin-top:12px;line-height:1.6">说明：为了正版验证，离线账户和外置登录需要先登录一次拥有 Minecraft 的微软账户，确认你购买了游戏后才能添加和使用。</div></div>';
-      return '<div class="split" style="padding-left:12px"><div class="panel"><div class="scr" data-s="acc"><div class="grp" style="margin:0"><h3>账户</h3><div class="gc" style="padding:16px 20px 20px">' + inner + '</div></div></div></div></div>';
+      return '<div class="grp" style="margin:0"><h3>账户</h3><div class="gc" style="padding:16px 20px 20px">' + inner + '</div></div>';
     }
 
     /* ---------- 设置 ---------- */
     var SET_NAV = [
-      ['游戏', [['launch', '启动', 'rocket_launch'], ['java', 'Java', 'coffee'], ['manage', '游戏管理', 'folder']]],
+      ['游戏', [['accounts', '账户', 'person'], ['launch', '启动', 'rocket_launch'], ['java', 'Java', 'coffee'], ['manage', '游戏管理', 'folder']]],
       ['启动器', [['appearance', '个性化', 'palette'], ['misc', '其他', 'tune']]],
       ['AI', [['ai', '模型与接口', 'auto_awesome'], ['aiTools', '工具与服务', 'extension'], ['aiWorkspace', '工作区与联网', 'travel_explore']]],
       ['关于', [['about', '关于与致谢', 'info'], ['docs', '使用文档', 'menu_book']]]
@@ -485,7 +485,9 @@
     var SEEDS = [['green', '#2f6b4f', '默认'], ['blue', '#2e6cb5', '蓝'], ['orange', '#b4632b', '橙'], ['purple', '#7a4fa0', '紫']];
     function settings() {
       var s = S.setSec, r = '';
-      if (s === 'launch') {
+      if (s === 'accounts') {
+        r = accounts();
+      } else if (s === 'launch') {
         r = grp('启动', [
           row(null, '实例隔离', '新实例首次启动时按此规则决定，之后在实例设置中单独修改', dd('iso', [['mod', '隔离可安装模组的实例'], ['all', '隔离所有实例'], ['none', '关闭']], 'mod')),
           row(null, '游戏窗口', null, dd('win', [['def', '默认（854 × 480）'], ['launcher', '与启动器一致'], ['max', '最大化'], ['full', '全屏'], ['custom', '自定义大小']], 'def')),
@@ -673,7 +675,7 @@
       if (S.sub === 'instance') return detailPage();
       if (S.sub === 'log') return logPage();
       if (S.sub === 'tasks') return tasksPage();
-      return { home: home, download: download, tools: tools, accounts: accounts, settings: settings, ai: ai }[S.page]();
+      return { home: home, download: download, tools: tools, settings: settings, ai: ai }[S.page]();
     }
 
     /* ---------- 渲染 ---------- */
