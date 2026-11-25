@@ -8,11 +8,11 @@
 <title>Pixel World</title>
 <meta name="description" content="Pixel World：第三方 Minecraft 启动器，本项目为轻度使用 PCL 仓储库，支持 Windows、macOS、Linux 与 Android。">
 <link rel="icon" href="favicon.png">
-<link rel="stylesheet" href="demo/demo.css?v=4">
+<link rel="stylesheet" href="demo/demo.css?v=5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block">
 <style>
 /* ---------- MD3 颜色：种子色 #1370F3 ---------- */
 :root {
@@ -216,21 +216,6 @@ main > section { padding: 40px 0; }
 .notice p + p { margin-top: 12px; }
 .notice a { color: var(--md-sys-color-primary); text-decoration: underline; }
 
-/* ---------- 在线体验 ---------- */
-.demo-frame {
-  display: block; width: 100%; height: 760px; margin-top: 14px;
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 22px; background: #F3F5EC;
-}
-.beta {
-  display: inline-block; margin-left: 8px; padding: 2px 8px;
-  border-radius: 999px; font-size: 10px; line-height: 16px; font-weight: 600;
-  background: var(--md-sys-color-tertiary-container);
-  color: var(--md-sys-color-on-tertiary-container);
-  vertical-align: middle;
-}
-@media (max-width: 599px) { .demo-frame { height: 620px; } }
-
 /* ---------- 常见问题：可展开列表 ---------- */
 .faq-list { border-radius: 16px; background: var(--md-sys-color-surface-container-low); overflow: hidden; }
 details + details { border-top: 1px solid var(--md-sys-color-outline-variant); }
@@ -393,13 +378,9 @@ body { overflow-x: clip; }
     <div class="wrap">
       <div class="sec-head">
         <h2 class="headline-medium">在线体验</h2>
-        <p class="lead body-large">下面是启动器界面的网页演示，可以点击试试。实际功能请下载启动器使用。</p>
+        <p class="lead body-large">下面是启动器电脑版界面的网页演示，可以点击试试：切换实例、浏览版本和模组、查询服务器、换主题色都能用。下载、安装和启动只是演示，实际功能请下载启动器使用。</p>
       </div>
-      <div id="pcl-demo"><p style="color:var(--md-sys-color-on-surface-variant)">演示需要启用 JavaScript。</p></div>
-
-      <h3 class="title-large" style="margin-top:40px">Pixel World 新版 UI<span class="beta">内测中</span></h3>
-      <p class="body-medium" style="margin-top:6px;color:var(--md-sys-color-on-surface-variant)">新界面正在开发中，下面是可交互的界面预览。旧版演示保留在上面，功能仍以下载的启动器为准。</p>
-      <iframe class="demo-frame" src="demo/pixel-world.html" title="Pixel World 新版 UI 在线体验" loading="lazy"></iframe>
+      <div id="pw-demo"><p style="color:var(--md-sys-color-on-surface-variant)">演示需要启用 JavaScript。</p></div>
     </div>
   </section>
 
@@ -475,7 +456,7 @@ body { overflow-x: clip; }
   </div>
 </footer>
 
-<script src="demo/demo.js?v=4" defer></script>
+<script src="demo/demo.js?v=5" defer></script>
 <script>
 // 滚动进入视口时淡入上移，只触发一次；同批进入的元素按序错开
 (function () {
