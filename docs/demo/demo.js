@@ -75,7 +75,7 @@
       page: 'home', sub: null, inst: 0, detail: 0, detailTab: 'overview',
       dlTab: 'versions', filt: 'release', vq: '', dlSel: null, ld: null, ldv: 0, of: false, iname: '',
       resQ: '', setSec: 'launch', toolSec: 'transfer', running: false,
-      theme: 'system', seed: 'green', sw: {}, sel: {}, txt: {},
+      theme: 'system', seed: 'green', layout: 'min', bg: true, sw: {}, sel: {}, txt: {},
       accounts: [{ n: 'Steve', t: '正版' }, { n: 'Alex', t: '离线' }], acc: 0,
       tasks: [], ai: [], instQ: '', menu: null
     };
@@ -126,6 +126,7 @@
       return '<span class="vico" style="' + st + 'background:' + L.c + ';color:' + L.fg + ';font-weight:800;font-size:' + Math.round(size * .36) + 'px">' + L.a + '</span>';
     }
     function cur() { return INST[S.inst]; }
+    function glassOn() { return S.bg && S.layout !== 'std'; }
     function account() { return S.accounts[S.acc]; }
     function worldThumb(w) {
       return 'background:linear-gradient(180deg,' + w.sky + ' 0 46%,' + w.c + ' 46% 64%,#6b4a2f 64%)';
@@ -197,7 +198,7 @@
           '<span class="th" style="' + worldThumb(w) + '"></span><span class="t"><b>' + esc(w.n) + '</b><span class="s">' + esc(instTitle(INST[w.i]) + ' · ' + w.ago) + '</span></span>' +
           '<span class="go hv" ' + act('playworld', i) + ' title="进入这个存档">' + ic('rocket_launch') + '</span></button>';
       }).join('');
-      var fold = '<div class="fold"><div class="toprow">' + hero + side + '</div>' +
+      var fold = S.layout === 'split' ? splitFold(v, facts) : S.layout === 'min' ? minFold(v) : '<div class="fold"><div class="toprow">' + hero + side + '</div>' +
         '<div class="rh"><b>最近游玩</b><span class="sp"></span><button type="button" class="b txt sm hv"' + act('detail', S.inst, 'saves') + '>全部存档 ›</button></div>' +
         '<div class="worlds">' + worlds + '</div>' +
         '<div class="down"><button type="button" class="b txt sm hv"' + act('scrolldown') + '>向下滚动查看更多' + ic('expand_more') + '</button></div></div>';
@@ -217,6 +218,34 @@
           '<div class="hint">' + ic('volunteer_activism') + '<div>本软件完全免费、开源。如果你是付费购买或下载的，那么你可能被骗了，请向卖家申请退款，并从 <a href="' + REPO + '/releases" target="_blank" rel="noopener">GitHub 获取正版</a>。</div></div>';
       }
       return '<div class="scr" data-s="home"><div class="home">' + fold + '<div class="lower"><div class="l">' + left + '</div><div class="r">' + right + '</div></div></div></div>';
+    }
+
+    function dockLaunch(v) {
+      return S.running
+        ? '<button type="button" class="dock run"' + act('stop') + '>' + ic('stop') + '<span><b>结束游戏</b><span class="v">' + esc(instTitle(v)) + '</span></span></button>'
+        : '<button type="button" class="dock hv"' + act('launch') + '>' + ic('rocket_launch') + '<span style="min-width:0"><b>开始游戏</b><span class="v">' + esc(instTitle(v)) + '</span></span></button>';
+    }
+    var downBtn = '<div class="down" style="margin:0 0 4px"><button type="button" class="b txt sm hv"' + act('scrolldown') + '>向下滚动查看更多' + ic('expand_more') + '</button></div>';
+    /* 「上下」：顶部一条当前实例，中间留给背景，底部一条开始游戏和最近游玩的存档 */
+    function splitFold(v, facts) {
+      var tool = function (icon, tipText, a, val, k) { return '<button type="button" class="ib hv"' + act(a, val, k) + ' title="' + tipText + '" aria-label="' + tipText + '">' + ic(icon) + '</button>'; };
+      var top = '<div class="strip">' + vicon(v, 40) + '<div class="ti"><b>' + esc(instTitle(v)) + '</b><span>' + esc(facts) + '</span></div>' +
+        '<button type="button" class="swi flat hv"' + act('menu', 'inst') + '>切换实例' + ic('expand_more') + '</button><span class="sp"></span>' +
+        tool('campaign', '启动器公告', 'tip', '查看公告') + tool('download', '装模组', 'godl', 'mods') + tool('view_list', '管理模组', 'detail', S.inst, 'mods') + tool('folder', '文件夹', 'tip', '打开文件夹') + tool('article', '查看日志', 'sub', 'log') +
+        '<button type="button" class="b out hv" style="margin-left:6px"' + act('detail', S.inst) + '>实例设置</button></div>';
+      var ws = WORLDS.slice(0, 3).map(function (w, i) {
+        return '<button type="button" class="dw hv"' + act('playworld', i) + ' title="进入这个存档"><span class="th" style="' + worldThumb(w) + '"></span><span style="min-width:0"><b>' + esc(w.n) + '</b><span class="s">' + esc(instTitle(INST[w.i]) + ' · ' + w.ago) + '</span></span></button>';
+      }).join('');
+      var bottom = '<div class="strip">' + dockLaunch(v) + ws + '<span class="sp"></span><button type="button" class="b tonal hv"' + act('detail', S.inst, 'saves') + '>' + ic('grid_view') + '全部存档</button></div>';
+      return '<div class="foldw">' + top + '<div class="gap"></div>' + downBtn + bottom + '</div>';
+    }
+    /* 「极简」：只在底部留一条，放当前实例和开始游戏 */
+    function minFold(v) {
+      var bar = '<div class="mbar">' + vicon(v, 40) + '<button type="button" class="vt hv"' + act('menu', 'inst') + '><b>' + esc(instTitle(v)) + '</b><span>切换实例' + ic('expand_more') + '</span></button><span class="div"></span>' +
+        '<button type="button" class="ib hv"' + act('detail', S.inst, 'saves') + ' title="全部存档" aria-label="全部存档">' + ic('grid_view') + '</button>' +
+        '<button type="button" class="ib hv"' + act('detail', S.inst) + ' title="实例设置" aria-label="实例设置">' + ic('tune') + '</button>' +
+        '<button type="button" class="ib hv"' + act('menu', 'minmore') + ' title="更多" aria-label="更多">' + ic('more_horiz') + '</button>' + dockLaunch(v) + '</div>';
+      return '<div class="foldw"><div class="gap"></div>' + downBtn + bar + '</div>';
     }
 
     /* ---------- 下载 ---------- */
@@ -425,13 +454,16 @@
       } else if (s === 'appearance') {
         r = grp('外观', [
           row(null, '颜色模式', '启动器界面的明暗模式', dd('theme', [['system', '跟随系统'], ['light', '浅色'], ['dark', '深色']], S.theme)),
-          '<div class="lt"><div class="t"><div class="t1">主题色</div><div class="t2">按 Material Design 3 从主题色生成整套浅色与深色配色</div></div><div class="trail">' + SEEDS.map(function (x) {
-            return '<button type="button" class="swatch' + (S.seed === x[0] ? ' on' : '') + '" style="background:' + x[1] + '"' + act('seed', x[0]) + ' aria-label="' + x[2] + '" title="' + x[2] + '">' + (S.seed === x[0] ? ic('check') : '') + '</button>';
-          }).join('') + '</div></div>',
+          (glassOn()
+            ? row(null, '主题色', '跟随背景：按 Material Design 3 从背景图片取色，换图片后自动更新', '<span class="chip on">' + ic('wallpaper') + '跟随背景</span>')
+            : '<div class="lt"><div class="t"><div class="t1">主题色</div><div class="t2">按 Material Design 3 从主题色生成整套浅色与深色配色</div></div><div class="trail">' + SEEDS.map(function (x) {
+              return '<button type="button" class="swatch' + (S.seed === x[0] ? ' on' : '') + '" style="background:' + x[1] + '"' + act('seed', x[0]) + ' aria-label="' + x[2] + '" title="' + x[2] + '">' + (S.seed === x[0] ? ic('check') : '') + '</button>';
+            }).join('') + '</div></div>'),
           row(null, '界面缩放', '自动：按屏幕尺寸计算，当前为 100%', dd('scale', [['auto', '自动'], ['90', '90%'], ['100', '100%'], ['110', '110%'], ['125', '125%']], 'auto'))
-        ]) + grp('背景', [row(null, '背景图片', '选择一张图片作为启动器的背景，界面面板会变成毛玻璃', btn('tonal', '选择图片…', null, 'tip', '选择背景图片'))]) +
+        ]) + grp('背景', [row(null, '背景图片', !S.bg ? '选择一张图片作为启动器的背景，界面面板会变成毛玻璃' : S.layout === 'std' ? '「标准」首页不显示背景图片，把首页布局换成「上下」或「极简」后生效' : '显示在整个窗口后面，界面面板会变成毛玻璃',
+            S.bg ? btn('tonal', '换一张…', null, 'tip', '选择背景图片') + btn('txt', '移除', null, 'bgoff') : btn('tonal', '使用演示壁纸', null, 'bgon'))]) +
           grp('首页', [
-            row(null, '首页布局', '标准：大卡片、公告与快捷按钮、最近游玩', dd('layout', [['std', '标准'], ['split', '上下'], ['min', '极简']], 'std')),
+            row(null, '首页布局', { std: '标准：大卡片、公告与快捷按钮、最近游玩', split: '上下：当前实例在顶部，开始游戏和存档在底部，中间留给背景；选背景图片时自动切到这个布局', min: '极简：只在底部留一条，放当前实例和开始游戏' }[S.layout], dd('layout', [['std', '标准'], ['split', '上下'], ['min', '极简']], S.layout)),
             row(null, '显示使用提示', '正在使用的版本与免费声明', sw('hints', true)),
             row(null, '显示 Minecraft 版本动态', '最新的正式版与快照，简介来自中文 Minecraft Wiki', sw('news', true))
           ]) + grp('帮助', [row(null, '新手教程', '再看一遍启动器各个地方的介绍：账户、安装游戏、实例、开始游戏、工具和设置', btn('tonal', '开始', null, 'tip', '开始新手教程'))]);
@@ -590,6 +622,7 @@
     function applyTheme() {
       var dark = S.theme === 'dark' || (S.theme === 'system' && mq && mq.matches);
       root.classList.toggle('dark', !!dark);
+      root.classList.toggle('glass', glassOn());
       if (S.seed === 'green') root.removeAttribute('data-seed'); else root.setAttribute('data-seed', S.seed);
     }
     if (mq) { var onMq = function () { applyTheme(); }; if (mq.addEventListener) mq.addEventListener('change', onMq); else if (mq.addListener) mq.addListener(onMq); }
@@ -738,6 +771,7 @@
           e.stopPropagation();
           if (S.menu) { closeMenu(); break; }
           if (v === 'inst') openMenu(el, INST.map(function (x, i) { return ['pick', i, x.id, i === S.inst ? 'check' : '']; }).concat(['-', ['sub', 'versions', '实例列表', 'list']]));
+          else if (v === 'minmore') openMenu(el, [['godl', 'mods', '装模组', 'download'], ['detail', String(S.inst), '管理模组', 'view_list'], ['tip', '打开文件夹', '打开文件夹', 'folder_open'], ['sub', 'log', '查看日志', 'article'], ['tip', '查看公告', '启动器公告', 'campaign']]);
           else openMenu(el, [['sub', 'versions', '实例列表', 'list'], ['tip', '打开文件夹', '打开实例文件夹', 'folder_open'], ['sub', 'log', '游戏日志', 'article']]);
           break;
         case 'pick': S.inst = +v; if (S.sub === 'instance' || S.sub === 'versions') render(false); else { S.sub = null; render(false); } say('已切换到 ' + INST[S.inst].id); break;
@@ -801,6 +835,8 @@
         case 'set': S.setSec = v; render(false); break;
         case 'seed': S.seed = v; applyTheme(); render(false); break;
         case 'java': S.sel.java = v; render(false); break;
+        case 'bgoff': S.bg = false; applyTheme(); render(false); break;
+        case 'bgon': S.bg = true; if (S.layout === 'std') S.layout = 'split'; applyTheme(); render(false); break;
         case 'clean': say('已清理 128.4 MB（演示）'); break;
         case 'checkupd': say('已经是最新版本 0.3.4（演示）'); break;
         case 'sw':
@@ -824,7 +860,7 @@
       if (!k) return;
       S.sel[k] = t.value;
       if (k === 'theme') { S.theme = t.value; applyTheme(); }
-      if (k === 'layout' && t.value !== 'std') { S.sel.layout = 'std'; t.value = 'std'; say('「上下」和「极简」布局配合背景图片使用，网页演示只展示标准布局。'); }
+      if (k === 'layout') { S.layout = t.value; applyTheme(); render(false); }
     });
     root.addEventListener('input', function (e) {
       var t = e.target;
