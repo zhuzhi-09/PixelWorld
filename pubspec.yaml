@@ -16,9 +16,9 @@ dependencies:
     sdk: flutter
   intl: any
 
-  window_manager: ^0.6.0
+  window_manager: ^0.7.0
   # 窗口位置与屏幕信息（背景「跨区」）；window_manager 底层就是它，版本跟着走
-  nativeapi: ^0.5.10
+  nativeapi: ^0.6.1
   url_launcher: ^6.3.3
   material_color_utilities: any
   path: ^1.9.1
