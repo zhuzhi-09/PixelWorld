@@ -19,7 +19,7 @@ concurrency:
 
 env:
   # 升级时 ci.yml 里的也要一起改
-  FLUTTER_VERSION: 3.47.9
+  FLUTTER_VERSION: 3.50.1
   # 写进程序里的构建信息，供启动器的更新功能判断通道与版本
   PCLPW_COMMIT: ${{ github.sha }}
   PCLPW_CHANNEL: ${{ github.ref_type != 'tag' && 'nightly' || contains(github.ref_name, '-') && 'preview' || 'stable' }}

@@ -19,7 +19,7 @@ concurrency:
 
 env:
   # 与 release.yml 保持一致
-  FLUTTER_VERSION: 3.47.9
+  FLUTTER_VERSION: 3.50.1
   PCLPW_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
   PCLPW_CHANNEL: nightly
 
