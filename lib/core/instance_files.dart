@@ -44,6 +44,9 @@ class InstanceFile {
 
 final _image = RegExp(r'\.(png|jpe?g|webp)$', caseSensitive: false);
 
+/// 系统自动生成的文件（macOS 的 .DS_Store、Windows 资源管理器的缩略图缓存和文件夹设置），不列出来
+const _systemJunk = {'.ds_store', 'thumbs.db', 'desktop.ini'};
+
 List<InstanceFile> listInstanceFiles(String gameDir, InstanceFolder folder) {
   final dir = Directory(p.join(gameDir, folder.name));
   if (!dir.existsSync()) return [];
@@ -52,6 +55,8 @@ List<InstanceFile> listInstanceFiles(String gameDir, InstanceFolder folder) {
     final isDir = e is Directory;
     if (folder == InstanceFolder.saves && !isDir) continue;
     if (folder == InstanceFolder.screenshots && !_image.hasMatch(e.path)) continue;
+    final base = p.basename(e.path).toLowerCase();
+    if (_systemJunk.contains(base.endsWith('.disabled') ? base.substring(0, base.length - 9) : base)) continue;
     try {
       final s = e.statSync();
       out.add(InstanceFile(path: e.path, size: s.size, modified: s.modified, isDir: isDir));

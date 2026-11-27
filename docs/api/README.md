@@ -2,7 +2,7 @@
 
 启动器从这里读取更新信息和公告，地址按顺序尝试：
 
-1. `https://pixelworld.zhuzhi.site/api/v1/`
+1. `https://pixelworld.paperzhu.com/api/v1/`
 2. `https://raw.githubusercontent.com/zhuzhi-09/PixelWorld/site/docs/api/v1/`
 
 都失败时，更新检查退回到 GitHub API，公告不显示。路径中的 `v1` 是格式版本：以后格式不兼容时新建 `v2`，`v1` 继续保留给旧版启动器。
@@ -10,6 +10,10 @@
 ## update.json
 
 由发布工作流（`.github/workflows/release.yml` 的 Update API 步骤，脚本 `tool/update_api.py`）在每次发布后自动生成，**不要手动修改**。
+
+同时生成 `update.json.sig`：用 Ed25519 私钥（仓库 Actions 密钥 `UPDATE_SIGNING_KEY`）对 `update.json` 的原始字节签名，Base64 编码。启动器内置对应的公钥（`lib/app_info.dart` 的 `updateSigningKey`），签名缺失或不对的地址会被跳过；全部不可用时改用 GitHub API。手动改了 `update.json` 签名就会失效。
+
+更换密钥：生成新的密钥对，更新 `UPDATE_SIGNING_KEY` 和 `updateSigningKey` 后发布新版本。旧版本拿着旧公钥验证不了新签名，会改用 GitHub API 检查更新，不会收不到更新。
 
 ## notices.json
 
