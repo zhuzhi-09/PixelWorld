@@ -118,17 +118,16 @@ class _ToolsPageState extends State<ToolsPage> {
   /// 桌面：和设置页一样的左侧分组菜单
   Widget _desktop(BuildContext context) {
     final section = _section ?? _Section.transfer;
-    final current = _groups(context.l10n).expand((g) => g.$2).firstWhere((t) => t.section == section);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SideNav<_Tool>(
+        SideNav<_Section>(
           groups: [
             for (final (title, tools) in _groups(context.l10n))
-              SideNavGroup(title, [for (final t in tools) SideNavItem(t, t.title, t.icon)]),
+              SideNavGroup(title, [for (final t in tools) SideNavItem(t.section, t.title, t.icon)]),
           ],
-          value: current,
-          onChanged: (t) => setState(() => _section = t.section),
+          value: section,
+          onChanged: (s) => setState(() => _section = s),
         ),
         Expanded(child: ContentPanel(child: _content(section))),
       ],
